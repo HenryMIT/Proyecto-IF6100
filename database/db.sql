@@ -7,13 +7,6 @@ CREATE TABLE Categoria_productos (
     nombre VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE Facturas (
-    id_Factura INT PRIMARY KEY AUTO_INCREMENT,
-    fecha DATE DEFAULT CURRENT_TIMESTAMP,
-    comentario TEXT,
-    estado ENUM('ENTREGADO', 'NO ENTREGADO') DEFAULT 'NO ENTREGADO',
-    total DECIMAL(10,2)
-);
 
 CREATE TABLE Contactos (
     id_Mensaje INT PRIMARY KEY AUTO_INCREMENT,
@@ -25,11 +18,13 @@ CREATE TABLE Contactos (
 );
 
 CREATE TABLE Usuarios (
-	id_usuario INT PRIMARY KEY AUTO_INCREMENT, 
+	id_usuario INT PRIMARY KEY , 
 	rol INT NOT NULL,
 	correo VARCHAR(255) NOT NULL UNIQUE,
-	clave VARBINARY(64) NOT NULL 
-); 
+	clave VARBINARY(64) NOT NULL,
+	ultimo_acceso DATETIME,-- para el refrescameitno de la pagina 
+	tkRef VARCHAR(255) DEFAULT NULL -- Token de referencia para la sesión
+);
 
 CREATE TABLE Administradores (
 	id_administrador INT PRIMARY KEY AUTO_INCREMENT, 
@@ -76,3 +71,14 @@ CREATE TABLE Factura_Productos (
     FOREIGN KEY (id_Factura) REFERENCES Facturas(id_Factura),
     FOREIGN KEY (id_Producto) REFERENCES Productos(id_Producto)
 )
+
+
+CREATE TABLE Facturas (
+    id_Factura INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT NOT NULL,
+    fecha DATE DEFAULT CURRENT_TIMESTAMP,
+    comentario TEXT,
+    estado ENUM('ENTREGADO', 'NO ENTREGADO') DEFAULT 'NO ENTREGADO',
+    total DECIMAL(10,2),
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario)
+);
