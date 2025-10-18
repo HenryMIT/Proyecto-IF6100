@@ -21,4 +21,4 @@ frontend/yarn-error.log*
 
 # --- SO / Editores ---
 .vscode/
-
+Dockerfile
