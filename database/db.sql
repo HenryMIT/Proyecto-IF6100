@@ -18,7 +18,8 @@ CREATE TABLE Contactos (
 );
 
 CREATE TABLE Usuarios (
-	id_usuario INT PRIMARY KEY , 
+	id INT PRIMARY KEY , 
+    id_usuario
 	rol INT NOT NULL,
 	correo VARCHAR(255) NOT NULL UNIQUE,
 	clave VARBINARY(64) NOT NULL,
@@ -27,8 +28,8 @@ CREATE TABLE Usuarios (
 );
 
 CREATE TABLE Administradores (
-	id_administrador INT PRIMARY KEY AUTO_INCREMENT, 
-	id_usuario INT, 
+	id  INT PRIMARY KEY AUTO_INCREMENT, 
+	id_administrador INT, 
 	nombre VARCHAR(25),
 	primer_apellido VARCHAR(25) NOT NULL,
 	segundo_apellido VARCHAR(25) NOT NULL,
@@ -38,8 +39,8 @@ CREATE TABLE Administradores (
 );
 
 CREATE TABLE Clientes (
-	id_cliente INT PRIMARY KEY AUTO_INCREMENT, 
-	id_usuario INT,
+	id  INT PRIMARY KEY AUTO_INCREMENT, 
+	id_cliente INT,
 	nombre VARCHAR(25),
 	primer_apellido VARCHAR(25) NOT NULL,
 	segundo_apellido VARCHAR(25) NOT NULL,
