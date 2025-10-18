@@ -35,7 +35,6 @@ CREATE TABLE Administradores (
 	correo VARCHAR(255) NOT NULL UNIQUE,
 	telefono VARCHAR(8) NOT NULL,
 	clave VARBINARY(64) NOT NULL,
-	FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario)
 );
 
 CREATE TABLE Clientes (
@@ -48,7 +47,6 @@ CREATE TABLE Clientes (
 	telefono VARCHAR(8) NOT NULL,
 	direccion TEXT NOT NULL,
 	clave VARBINARY(64) NOT NULL,
-	FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario)
 );
 
 CREATE TABLE Productos (
