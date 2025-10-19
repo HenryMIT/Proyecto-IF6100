@@ -1,7 +1,8 @@
 # --- BACKEND (FastAPI / Python) ---
 backend/.venv/
 backend/venv/
-backend/__pycache__/
+backend/datos/__pycache__/
+backend/negocio/__pycache__/
 backend/.pytest_cache/
 backend/*.pyc
 backend/*.pyo
