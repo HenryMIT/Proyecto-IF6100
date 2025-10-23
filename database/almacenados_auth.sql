@@ -50,15 +50,14 @@ CREATE FUNCTION autenticarUsuario (_correo VARCHAR(255), _clave VARCHAR(255))
 RETURNS INT
 DETERMINISTIC
 READS SQL DATA
-BEGIN
-    DECLARE _cant INT;
+BEGIN    
     DECLARE _user_id INT;
     
-    SELECT COUNT(id), id INTO _cant, _user_id 
+    SELECT id INTO _user_id 
     FROM Usuarios 
     WHERE correo = _correo AND clave = SHA2(_clave, 256);
     
-    IF _cant > 0 THEN
+    IF _user_id > 0 THEN
         -- Actualizar último acceso
         UPDATE Usuarios SET ultimo_acceso = NOW() WHERE id = _user_id;
         RETURN _user_id; -- Retorna el ID del usuario autenticado
@@ -236,7 +235,7 @@ SELECT * FROM Usuarios;
 
 -- 1. PRUEBA: Autenticar usuario (login)
 SELECT autenticarUsuario('admin@empresa.com', 'admin123') AS 'ID Usuario Autenticado';
-SELECT autenticarUsuario('cliente1@email.com', 'cliente123') AS 'ID Cliente Autenticado';
+SELECT autenticarUsuario('cliente1@email.com', 'cliente123') AS 'ID Usuario Autenticado';
 SELECT autenticarUsuario('noexiste@email.com', 'clave') AS 'Usuario Inexistente';
 
 -- 2. PRUEBA: Obtener datos de usuario autenticado
