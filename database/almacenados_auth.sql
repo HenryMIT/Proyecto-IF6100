@@ -68,7 +68,7 @@ END$$
 
 -- Función para obtener datos del usuario autenticado
 DROP PROCEDURE IF EXISTS obtenerDatosUsuario$$
-CREATE PROCEDURE obtenerDatosUsuario (_id_usuario INT)
+CREATE PROCEDURE obtenerDatosUsuarioClientes (_id_usuario INT)
 BEGIN
     SELECT 
         u.id,
