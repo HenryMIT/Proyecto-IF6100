@@ -31,8 +31,6 @@ class ClienteUpdate(BaseModel):
 class ClienteResponse(ClienteBase):
     """Esquema para respuesta de cliente"""
     id_cliente: int
-    fecha_registro: Optional[datetime] = None
-    estado: Optional[bool] = True
 
     class Config:
         from_attributes = True

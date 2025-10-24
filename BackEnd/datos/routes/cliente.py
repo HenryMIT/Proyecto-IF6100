@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from databases import get_db
-from schemas.clientes import ClienteCreate, ClienteUpdate  # ClienteResponse opcional si tus SP devuelven esas columnas
+from schemas.cliente import ClienteCreate, ClienteUpdate  # ClienteResponse opcional si tus SP devuelven esas columnas
 from typing import List, Optional
 from sqlalchemy.exc import IntegrityError
 

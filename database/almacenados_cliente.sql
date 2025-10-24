@@ -53,13 +53,13 @@ CREATE FUNCTION nuevoCliente (
 READS SQL DATA
 DETERMINISTIC
 BEGIN
-    DECLARE _cant INT;
-    SELECT COUNT(id) INTO _cant FROM Clientes WHERE id_cliente = _id_cliente OR correo = _correo;
-    IF _cant < 1 THEN
-        INSERT INTO Clientes(nombre, primer_apellido, segundo_apellido, telefono, direccion, correo) 
-            VALUES (_nombre, _primer_apellido, _segundo_apellido, _telefono, _direccion, _correo);
-    END IF;
-    RETURN _cant;
+    DECLARE _id_usuario INT;
+    
+    INSERT INTO Clientes(nombre, primer_apellido, segundo_apellido, telefono, direccion, correo) 
+		VALUES (_nombre, _primer_apellido, _segundo_apellido, _telefono, _direccion, _correo);
+	SET _id_usuario = LAST_INSERT_ID(); 		
+    
+    RETURN _id_usuario;
 END$$
 
 -- Función para editar cliente (ORIGINAL ADAPTADO)
