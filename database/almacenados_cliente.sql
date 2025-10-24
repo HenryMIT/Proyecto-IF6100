@@ -5,6 +5,19 @@ SET SQL_SAFE_UPDATES = 0;
 
 DELIMITER $$
 
+CREATE TRIGGER trg_id_cliente
+BEFORE INSERT ON Clientes
+FOR EACH ROW
+BEGIN
+  IF NEW.id_cliente IS NULL THEN
+    UPDATE counters
+      SET val = LAST_INSERT_ID(val + 1)
+    WHERE name = 'id_cliente';
+
+    SET NEW.id_cliente = LAST_INSERT_ID(); -- seguro por conexión
+  END IF;
+END$$
+
 -- Procedimiento para buscar cliente (ORIGINAL ADAPTADO)
 DROP PROCEDURE IF EXISTS buscarCliente$$
 CREATE PROCEDURE buscarCliente (_id INT, _id_cliente INT)
@@ -29,8 +42,7 @@ end$$
 
 -- Función para crear nuevo cliente (ORIGINAL ADAPTADO)
 DROP FUNCTION IF EXISTS nuevoCliente$$
-CREATE FUNCTION nuevoCliente (
-    _id_cliente INT,
+CREATE FUNCTION nuevoCliente (    
     _nombre VARCHAR(25),
     _primer_apellido VARCHAR(25),
     _segundo_apellido VARCHAR(25),
@@ -44,8 +56,8 @@ BEGIN
     DECLARE _cant INT;
     SELECT COUNT(id) INTO _cant FROM Clientes WHERE id_cliente = _id_cliente OR correo = _correo;
     IF _cant < 1 THEN
-        INSERT INTO Clientes(id_cliente, nombre, primer_apellido, segundo_apellido, telefono, direccion, correo) 
-            VALUES (_id_cliente, _nombre, _primer_apellido, _segundo_apellido, _telefono, _direccion, _correo);
+        INSERT INTO Clientes(nombre, primer_apellido, segundo_apellido, telefono, direccion, correo) 
+            VALUES (_nombre, _primer_apellido, _segundo_apellido, _telefono, _direccion, _correo);
     END IF;
     RETURN _cant;
 END$$
