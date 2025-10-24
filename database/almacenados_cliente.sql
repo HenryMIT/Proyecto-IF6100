@@ -12,6 +12,21 @@ BEGIN
     SELECT * FROM Clientes WHERE id = _id OR id_cliente = _id_cliente;
 END$$
 
+
+DROP PROCEDURE IF EXISTS filtrarCliente$$
+CREATE PROCEDURE filtrarCliente (
+    _parametros varchar(250), -- %idCliente%&%nombre%&%apellido1%&%apellido2%&
+    _pagina SMALLINT UNSIGNED, 
+    _cantRegs SMALLINT UNSIGNED)
+begin
+    SELECT cadenaFiltro(_parametros, 'idCliente&nombre&apellido1&apellido2&') INTO @filtro;
+    SELECT concat("SELECT * from cliente where ", @filtro, " LIMIT ", 
+        _pagina, ", ", _cantRegs) INTO @sql;
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+end$$
+
 -- Función para crear nuevo cliente (ORIGINAL ADAPTADO)
 DROP FUNCTION IF EXISTS nuevoCliente$$
 CREATE FUNCTION nuevoCliente (

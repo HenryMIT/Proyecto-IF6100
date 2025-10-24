@@ -12,6 +12,20 @@ BEGIN
     SELECT * FROM Administradores WHERE id_administrador = _id_administrador OR id = _id;
 END$$
 
+DROP PROCEDURE IF EXISTS filtrarAdministrador$$
+CREATE PROCEDURE filtrarAdministrador (
+    _parametros varchar(250), -- %idAdministrador%&%nombre%&%apellido1%&%apellido2%&
+    _pagina SMALLINT UNSIGNED, 
+    _cantRegs SMALLINT UNSIGNED)
+begin
+    SELECT cadenaFiltro(_parametros, 'idAdministrador&nombre&apellido1&apellido2&') INTO @filtro;
+    SELECT concat("SELECT * from administradores where ", @filtro, " LIMIT ", 
+        _pagina, ", ", _cantRegs) INTO @sql;
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+end$$
+
 -- Función para crear nuevo administrador (ORIGINAL ADAPTADO)
 DROP FUNCTION IF EXISTS nuevoAdministrador$$
 CREATE FUNCTION nuevoAdministrador (

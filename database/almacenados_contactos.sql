@@ -68,6 +68,20 @@ BEGIN
     ORDER BY fecha DESC;
 END$$
 
+DROP PROCEDURE IF EXISTS filtrarContacto$$
+CREATE PROCEDURE filtrarContacto (
+    _parametros varchar(250), -- %idAdministrador%&%nombre%&%apellido1%&%apellido2%&
+    _pagina SMALLINT UNSIGNED, 
+    _cantRegs SMALLINT UNSIGNED)
+begin
+    SELECT cadenaFiltro(_parametros, 'nombre&apellido&correo&') INTO @filtro;
+    SELECT concat("SELECT * from contactos where ", @filtro, " LIMIT ", 
+        _pagina, ", ", _cantRegs) INTO @sql;
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+end$$
+
 -- Procedimiento para buscar contactos por fecha específica
 DROP PROCEDURE IF EXISTS buscarContactosPorFechaEspecifica$$
 CREATE PROCEDURE buscarContactosPorFechaEspecifica (_fecha DATE)
