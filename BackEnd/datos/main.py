@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from routes.contactos import router as contactos_router
+from routes.cliente import router as routercliente
+from auth.authService import auth_router
 from databases import get_db, engine
 
 app = FastAPI(
@@ -22,6 +24,8 @@ app.add_middleware(
 
 # Incluir routers
 app.include_router(contactos_router)
+app.include_router(auth_router)
+app.include_router(routercliente)
 
 # Endpoint principal
 @app.get("/")
