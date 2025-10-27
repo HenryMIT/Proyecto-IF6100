@@ -5,6 +5,19 @@ SET SQL_SAFE_UPDATES = 0;
 
 DELIMITER $$
 
+CREATE TRIGGER trg_id_cliente
+BEFORE INSERT ON Clientes
+FOR EACH ROW
+BEGIN
+  IF NEW.id_cliente IS NULL THEN
+    UPDATE counters
+      SET val = LAST_INSERT_ID(val + 1)
+    WHERE name = 'id_cliente';
+
+    SET NEW.id_cliente = LAST_INSERT_ID(); -- seguro por conexión
+  END IF;
+END$$
+
 -- Procedimiento para buscar cliente (ORIGINAL ADAPTADO)
 DROP PROCEDURE IF EXISTS buscarCliente$$
 CREATE PROCEDURE buscarCliente (_id INT, _id_cliente INT)
@@ -12,10 +25,24 @@ BEGIN
     SELECT * FROM Clientes WHERE id = _id OR id_cliente = _id_cliente;
 END$$
 
+
+DROP PROCEDURE IF EXISTS filtrarCliente$$
+CREATE PROCEDURE filtrarCliente (
+    _parametros varchar(250), -- %idCliente%&%nombre%&%apellido1%&%apellido2%&
+    _pagina SMALLINT UNSIGNED, 
+    _cantRegs SMALLINT UNSIGNED)
+begin
+    SELECT cadenaFiltro(_parametros, 'idCliente&nombre&apellido1&apellido2&') INTO @filtro;
+    SELECT concat("SELECT * from cliente where ", @filtro, " LIMIT ", 
+        _pagina, ", ", _cantRegs) INTO @sql;
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+end$$
+
 -- Función para crear nuevo cliente (ORIGINAL ADAPTADO)
 DROP FUNCTION IF EXISTS nuevoCliente$$
-CREATE FUNCTION nuevoCliente (
-    _id_cliente INT,
+CREATE FUNCTION nuevoCliente (    
     _nombre VARCHAR(25),
     _primer_apellido VARCHAR(25),
     _segundo_apellido VARCHAR(25),
@@ -26,13 +53,13 @@ CREATE FUNCTION nuevoCliente (
 READS SQL DATA
 DETERMINISTIC
 BEGIN
-    DECLARE _cant INT;
-    SELECT COUNT(id) INTO _cant FROM Clientes WHERE id_cliente = _id_cliente OR correo = _correo;
-    IF _cant < 1 THEN
-        INSERT INTO Clientes(id_cliente, nombre, primer_apellido, segundo_apellido, telefono, direccion, correo) 
-            VALUES (_id_cliente, _nombre, _primer_apellido, _segundo_apellido, _telefono, _direccion, _correo);
-    END IF;
-    RETURN _cant;
+    DECLARE _id_usuario INT;
+    
+    INSERT INTO Clientes(nombre, primer_apellido, segundo_apellido, telefono, direccion, correo) 
+		VALUES (_nombre, _primer_apellido, _segundo_apellido, _telefono, _direccion, _correo);
+	SET _id_usuario = LAST_INSERT_ID(); 		
+    
+    RETURN _id_usuario;
 END$$
 
 -- Función para editar cliente (ORIGINAL ADAPTADO)

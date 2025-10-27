@@ -79,3 +79,11 @@ CREATE TABLE Factura_Productos (
     FOREIGN KEY (id_Producto) REFERENCES Productos(id_Producto)
 );
 
+CREATE TABLE counters (
+  name VARCHAR(50) PRIMARY KEY,
+  val  INT NOT NULL
+);
+
+INSERT INTO counters (name, val) VALUES ('id_cliente', 999);
+INSERT INTO counters (name, val) VALUES ('id_administrador', 999);
+

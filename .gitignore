@@ -2,6 +2,10 @@
 backend/.venv/
 backend/venv/
 backend/datos/__pycache__/
+backend/datos/models/__pycache__/
+backend/datos/routes/__pycache__/
+backend/datos/auth/__pycache__/
+backend/datos/services/__pycache__/
 backend/negocio/__pycache__/
 backend/.pytest_cache/
 backend/*.pyc

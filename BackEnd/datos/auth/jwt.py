@@ -12,7 +12,7 @@ def hash_password(plain: str) -> str:
 def verify_password(plain: str, hashed: str) -> bool:    
     return bcrypt.checkpw(plain.encode('utf-8'), hashed.encode('utf-8'))
 
-def create_access_token(sub: str):
+def create_access_token(sub: str, nombre:str, apellido1:str, correo: str, rol: int) -> str:
     expire = datetime.utcnow() + timedelta(minutes=settings.JWT_EXPIRE_MINUTES)
-    to_encode = {"sub": sub, "exp": expire}
+    to_encode = {"sub": sub,"nombre": nombre+" "+apellido1, "correo": correo, "rol": rol, "exp": expire}
     return jwt.encode(to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALG)

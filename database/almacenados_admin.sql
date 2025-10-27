@@ -5,6 +5,19 @@ SET SQL_SAFE_UPDATES = 0;
 
 DELIMITER $$
 
+CREATE TRIGGER trg_id_administrador
+BEFORE INSERT ON Administradores
+FOR EACH ROW
+BEGIN
+  IF NEW.id_administrador IS NULL THEN
+    UPDATE counters
+      SET val = LAST_INSERT_ID(val + 1)
+    WHERE name = 'id_cliente';
+
+    SET NEW.id_administrador = LAST_INSERT_ID(); -- seguro por conexión
+  END IF;
+END$$
+
 -- Procedimiento para buscar administrador (ORIGINAL ADAPTADO)
 DROP PROCEDURE IF EXISTS buscarAdministrador$$
 CREATE PROCEDURE buscarAdministrador (_id INT(11), _id_administrador INT)
@@ -12,10 +25,23 @@ BEGIN
     SELECT * FROM Administradores WHERE id_administrador = _id_administrador OR id = _id;
 END$$
 
+DROP PROCEDURE IF EXISTS filtrarAdministrador$$
+CREATE PROCEDURE filtrarAdministrador (
+    _parametros varchar(250), -- %idAdministrador%&%nombre%&%apellido1%&%apellido2%&
+    _pagina SMALLINT UNSIGNED, 
+    _cantRegs SMALLINT UNSIGNED)
+begin
+    SELECT cadenaFiltro(_parametros, 'idAdministrador&nombre&apellido1&apellido2&') INTO @filtro;
+    SELECT concat("SELECT * from administradores where ", @filtro, " LIMIT ", 
+        _pagina, ", ", _cantRegs) INTO @sql;
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+end$$
+
 -- Función para crear nuevo administrador (ORIGINAL ADAPTADO)
 DROP FUNCTION IF EXISTS nuevoAdministrador$$
 CREATE FUNCTION nuevoAdministrador (
-    _id_administrador INT,
     _nombre VARCHAR(25),
     _primer_apellido VARCHAR(25),
     _segundo_apellido VARCHAR(25),
@@ -28,8 +54,8 @@ BEGIN
     DECLARE _cant INT;
     SELECT COUNT(id) INTO _cant FROM Administradores WHERE id_administrador = _id_administrador;
     IF _cant < 1 THEN
-        INSERT INTO Administradores(id_administrador, nombre, primer_apellido, segundo_apellido, correo, telefono) 
-            VALUES (_id_administrador, _nombre, _primer_apellido, _segundo_apellido, _correo, _telefono);
+        INSERT INTO Administradores(nombre, primer_apellido, segundo_apellido, correo, telefono) 
+            VALUES (_nombre, _primer_apellido, _segundo_apellido, _correo, _telefono);
     END IF;
     RETURN _cant;
 END$$

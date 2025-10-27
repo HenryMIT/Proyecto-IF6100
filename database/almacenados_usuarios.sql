@@ -19,13 +19,13 @@ CREATE FUNCTION nuevoUsuario (
 READS SQL DATA
 DETERMINISTIC
 BEGIN
-    DECLARE _cant INT;
-    SELECT COUNT(id) INTO _cant FROM Usuarios WHERE id_usuario = _id_usuario;
-    IF _cant < 1 THEN
-        INSERT INTO Usuarios(id_usuario, correo, rol, clave) 
-            VALUES (_id_usuario, _correo, _rol, _clave);
-    END IF;
-    RETURN _cant;
+    DECLARE _id_administrador INT;
+    
+	INSERT INTO Usuarios(id_usuario, correo, rol, clave) 
+		VALUES (_id_usuario, _correo, _rol, SHA2(_clave, 256));
+    SET _id_administrador = LAST_INSERT_ID();
+    
+    RETURN _id_administrador;
 END$$
 
 -- Función para eliminar usuario (ORIGINAL ADAPTADO)
