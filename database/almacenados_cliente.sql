@@ -21,11 +21,16 @@ CREATE PROCEDURE filtrarCliente (
     _segundo_apellido varchar(255),
     _pagina SMALLINT UNSIGNED, 
     _cantRegs SMALLINT UNSIGNED)
-begin
-   SELECT * from Clientes
-   WHERE nombre LIKE CONCAT('%', _nombre,'%') 
-   OR primer_apellido LIKE CONCAT('%', _primer_apellido, '%')
-   OR segundo_apellido LIKE CONCAT('%', _segundo_apellido, '%');   
+begin	
+	IF _nombre IS NULL OR _nombre = '' AND  _primer_apellido IS NULL OR _primer_apellido = '' AND  _segundo_apellido IS NULL OR _segundo_apellido = '' THEN
+    SELECT * from Clientes LIMIT _pagina, _cantRegs;
+    ELSE 
+		SELECT * from Clientes
+		WHERE nombre LIKE CONCAT('%', _nombre,'%') 
+		OR primer_apellido LIKE CONCAT('%', _primer_apellido, '%')
+		OR segundo_apellido LIKE CONCAT('%', _segundo_apellido, '%')
+        LIMIT _pagina, _cantRegs;   
+	END IF;
 end$$
 
 -- Función para crear nuevo cliente (ORIGINAL ADAPTADO)
