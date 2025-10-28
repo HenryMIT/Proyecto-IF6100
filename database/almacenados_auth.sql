@@ -68,7 +68,7 @@ END$$
 
 -- Función para obtener datos del usuario autenticado
 DROP PROCEDURE IF EXISTS obtenerDatosUsuario$$
-CREATE PROCEDURE obtenerDatosUsuarioClientes (_id_usuario INT)
+CREATE PROCEDURE obtenerDatosUsuario(_id_usuario INT)
 BEGIN
     SELECT 
         u.id,
@@ -76,12 +76,7 @@ BEGIN
         u.rol,
         u.correo,
         u.ultimo_acceso,
-        u.tkRef,
-        CASE 
-            WHEN u.rol = 1 THEN 'Cliente'
-            WHEN u.rol = 2 THEN 'Administrador'
-            ELSE 'Usuario'
-        END AS tipo_usuario
+        u.tkRef                
     FROM Usuarios u
     WHERE u.id = _id_usuario;
 END$$
