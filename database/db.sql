@@ -21,8 +21,7 @@ CREATE TABLE Contactos (
 
 
 CREATE TABLE Administradores (
-	id  INT PRIMARY KEY AUTO_INCREMENT, 
-	id_administrador INT, 
+	id  INT PRIMARY KEY AUTO_INCREMENT, 	
 	nombre VARCHAR(25),
 	primer_apellido VARCHAR(25) NOT NULL,
 	segundo_apellido VARCHAR(25) NOT NULL,
@@ -40,8 +39,7 @@ CREATE TABLE Usuarios (
 );
 
 CREATE TABLE Clientes (
-	id  INT PRIMARY KEY AUTO_INCREMENT, 
-	id_cliente INT,
+	id  INT PRIMARY KEY AUTO_INCREMENT, 	
 	nombre VARCHAR(25),
 	primer_apellido VARCHAR(25) NOT NULL,
 	segundo_apellido VARCHAR(25) NOT NULL,
