@@ -24,9 +24,9 @@ def login(form: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get
     usuario = db.execute(
                 text("Call obtenerDatosUsuario(:id_usuario)"),
                 {"id_usuario": idusuario}).fetchone()._asdict()
-    
+    rol = "Clientes" if usuario["rol"] == 1 else "Administradores"
     nombreCompleto = db.execute(
-                text("SELECT nombre, primer_apellido FROM Clientes WHERE id = :id_usuario"),
+                text(f"SELECT nombre, primer_apellido FROM {rol} WHERE id = :id_usuario"),
                 {"id_usuario": usuario["id_usuario"]}).fetchone()._asdict()
     
     token = create_access_token(sub = str(idusuario), nombre = nombreCompleto["nombre"],
