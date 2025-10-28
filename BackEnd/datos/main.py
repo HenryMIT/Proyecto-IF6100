@@ -24,8 +24,12 @@ app.add_middleware(
 
 # Incluir routers
 app.include_router(contactos_router)
+<<<<<<< HEAD
+#app.include_router(producos_router)
+=======
 app.include_router(auth_router)
 app.include_router(routercliente)
+>>>>>>> 04a56b4b26872ff13b776eb140dc22aadf29820a
 
 # Endpoint principal
 @app.get("/")
