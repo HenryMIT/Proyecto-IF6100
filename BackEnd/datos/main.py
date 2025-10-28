@@ -6,6 +6,7 @@ from sqlalchemy import text
 from routes.contactos import router as contactos_router
 from routes.cliente import router as routercliente
 from auth.authService import auth_router
+from routes.productos import router as producto_router
 from databases import get_db, engine
 
 app = FastAPI(
@@ -24,12 +25,9 @@ app.add_middleware(
 
 # Incluir routers
 app.include_router(contactos_router)
-<<<<<<< HEAD
-#app.include_router(producos_router)
-=======
-app.include_router(auth_router)
 app.include_router(routercliente)
->>>>>>> 04a56b4b26872ff13b776eb140dc22aadf29820a
+app.include_router(auth_router)
+app.include_router(producto_router)
 
 # Endpoint principal
 @app.get("/")
