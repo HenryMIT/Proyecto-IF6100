@@ -6,6 +6,7 @@ from databases import get_db
 from schemas.cliente import ClienteCreate, ClienteUpdate, ClienteResponse  # ClienteResponse opcional si tus SP devuelven esas columnas
 from typing import List, Optional
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import SQLAlchemyError
 
 router = APIRouter(prefix="/clientes", tags=["clientes"])
 
@@ -33,30 +34,50 @@ def filtrar_clientes(
     return resultados
 
 @router.post("/", response_model=int, status_code=status.HTTP_201_CREATED)
-def crear_cliente(cliente: ClienteCreate, db: Session = Depends(get_db)):
+def crear_cliente(cliente: ClienteCreate, db: Session = Depends(get_db)):   
     try:
-        sql = """
-            SELECT nuevoCliente(
-                :nombre, :apellido1, :apellido2,
-                :telefono, :direccion, :correo
-            ) AS id_cliente
-        """
-        resultado = db.execute(
-            text(sql),
-            {
-                "nombre": cliente.nombre,
-                "apellido1": cliente.primer_apellido,
-                "apellido2": cliente.segundo_apellido,
-                "telefono": cliente.telefono,
-                "direccion": cliente.direccion,
-                "correo": cliente.correo
-            }
-        ).fetchone()
-        db.commit()        
+        with db.begin():
+            sql = """
+                SELECT nuevoCliente(
+                    :nombre, :apellido1, :apellido2,
+                    :telefono, :direccion, :correo
+                ) AS id_cliente
+            """
+
+            id_usuario = db.execute(
+                text(sql),
+                {
+                    "nombre": cliente.nombre,
+                    "apellido1": cliente.primer_apellido,
+                    "apellido2": cliente.segundo_apellido,
+                    "telefono": cliente.telefono,
+                    "direccion": cliente.direccion,
+                    "correo": cliente.correo
+                }
+            ).fetchone().id_cliente
+        
+            sqlUsuario = """
+                SELECT nuevoUsuario(
+                    :id_usuario, :correo,:rol, :clave
+                )
+            """
+            db.execute(text(sqlUsuario),
+                {
+                    "id_usuario": id_usuario,
+                    "correo": cliente.correo,
+                    "rol": 1,
+                    "clave": cliente.clave
+                })  
+        return id_usuario           
     except IntegrityError as e:
         db.rollback()
         raise HTTPException(status_code=400, detail="Error de integridad de datos: " + str(e.orig))
-
+    except SQLAlchemyError as e:
+        # la transacción ya fue rollbacked por el context manager
+        raise HTTPException(status_code=500, detail="Error en la base de datos")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+s
 @router.put("/{id}", response_model=None)
 def actualizar_cliente(id: int, cliente: ClienteUpdate, db: Session = Depends(get_db)):
     try:
