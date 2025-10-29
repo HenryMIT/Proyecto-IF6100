@@ -16,6 +16,7 @@ class ClienteCreate(ClienteBase):
     correo: EmailStr
     telefono: str
     direccion: str
+    clave: str
     
 # ---------- Esquema para actualizar ----------
 class ClienteUpdate(ClienteBase):
