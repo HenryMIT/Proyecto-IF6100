@@ -35,7 +35,8 @@ CREATE TABLE Usuarios (
 	correo VARCHAR(255) NOT NULL UNIQUE,
 	clave VARCHAR(255) NOT NULL,
 	ultimo_acceso DATETIME,-- para el refrescameitno de la pagina 
-	tkRef VARCHAR(255) DEFAULT NULL -- Token de referencia para la sesión
+	tkRef VARCHAR(255) DEFAULT NULL, -- Token de referencia para la sesión
+    tkCode VARCHAR(255) DEFAULT NULL
 );
 
 CREATE TABLE Clientes (
