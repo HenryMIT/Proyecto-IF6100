@@ -77,7 +77,7 @@ def crear_cliente(cliente: ClienteCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Error en la base de datos")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-s
+
 @router.put("/{id}", response_model=None)
 def actualizar_cliente(id: int, cliente: ClienteUpdate, db: Session = Depends(get_db)):
     try:
