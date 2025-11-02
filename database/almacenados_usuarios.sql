@@ -59,7 +59,7 @@ CREATE PROCEDURE claveUsuario (
     _clave VARBINARY(64)
 ) 
 BEGIN 
-    UPDATE Usuarios SET clave = _clave WHERE id_usuario = _id_usuario;
+    UPDATE Usuarios SET clave = sha2(_clave,256) WHERE id_usuario = _id_usuario;
 END$$
 
 DELIMITER ;

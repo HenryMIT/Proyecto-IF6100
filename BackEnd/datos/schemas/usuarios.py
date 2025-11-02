@@ -24,9 +24,16 @@ class UsuarioRead(UsuarioBase):
     correo: EmailStr
     tkr: Optional[str]
 
+class UsuarioRecuperar(BaseModel):
+    correo: EmailStr
+
+class UsuarioValidar(BaseModel):
+    correo: EmailStr
+    codigo: int
+
 class UsuarioCambiarClave(BaseModel):    
     correo: EmailStr
-    antigua_clave: str
+    codigo: int        
     nueva_clave: str
     
 class UsuarioDelete(BaseModel):

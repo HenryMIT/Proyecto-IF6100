@@ -5,38 +5,30 @@ SET SQL_SAFE_UPDATES = 0;
 
 DELIMITER $$
 
-CREATE TRIGGER trg_id_administrador
-BEFORE INSERT ON Administradores
-FOR EACH ROW
-BEGIN
-  IF NEW.id_administrador IS NULL THEN
-    UPDATE counters
-      SET val = LAST_INSERT_ID(val + 1)
-    WHERE name = 'id_cliente';
-
-    SET NEW.id_administrador = LAST_INSERT_ID(); -- seguro por conexión
-  END IF;
-END$$
-
 -- Procedimiento para buscar administrador (ORIGINAL ADAPTADO)
 DROP PROCEDURE IF EXISTS buscarAdministrador$$
-CREATE PROCEDURE buscarAdministrador (_id INT(11), _id_administrador INT)
+CREATE PROCEDURE buscarAdministrador (_id INT(11))
 BEGIN
-    SELECT * FROM Administradores WHERE id_administrador = _id_administrador OR id = _id;
+    SELECT * FROM Administradores WHERE id = _id;
 END$$
 
 DROP PROCEDURE IF EXISTS filtrarAdministrador$$
 CREATE PROCEDURE filtrarAdministrador (
-    _parametros varchar(250), -- %idAdministrador%&%nombre%&%apellido1%&%apellido2%&
+    _nombre varchar(255),
+    _primer_apellido varchar(255),
+    _segundo_apellido varchar(255),
     _pagina SMALLINT UNSIGNED, 
     _cantRegs SMALLINT UNSIGNED)
-begin
-    SELECT cadenaFiltro(_parametros, 'idAdministrador&nombre&apellido1&apellido2&') INTO @filtro;
-    SELECT concat("SELECT * from administradores where ", @filtro, " LIMIT ", 
-        _pagina, ", ", _cantRegs) INTO @sql;
-    PREPARE stmt FROM @sql;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
+begin	
+	IF _nombre IS NULL OR _nombre = '' AND  _primer_apellido IS NULL OR _primer_apellido = '' AND  _segundo_apellido IS NULL OR _segundo_apellido = '' THEN
+    SELECT * from Administradores LIMIT _pagina, _cantRegs;
+    ELSE 
+		SELECT * from Administradores
+		WHERE nombre LIKE CONCAT('%', _nombre,'%') 
+		OR primer_apellido LIKE CONCAT('%', _primer_apellido, '%')
+		OR segundo_apellido LIKE CONCAT('%', _segundo_apellido, '%')
+        LIMIT _pagina, _cantRegs;   
+	END IF;
 end$$
 
 -- Función para crear nuevo administrador (ORIGINAL ADAPTADO)
@@ -74,24 +66,10 @@ BEGIN
     RETURN _cant;
 END$$
 
--- Función para eliminar administrador por id_administrador (NUEVO)
-DROP FUNCTION IF EXISTS eliminarAdministradorPorId$$
-CREATE FUNCTION eliminarAdministradorPorId (_id_administrador INT) RETURNS INT
-READS SQL DATA
-DETERMINISTIC
-BEGIN
-    DECLARE _cant INT;
-    SELECT COUNT(id) INTO _cant FROM Administradores WHERE id_administrador = _id_administrador;
-    IF _cant > 0 THEN
-        DELETE FROM Administradores WHERE id_administrador = _id_administrador;
-    END IF;
-    RETURN _cant;
-END$$
-
 -- Procedimiento para cambiar datos de administrador
 DROP PROCEDURE IF EXISTS actualizarAdministrador$$
-CREATE PROCEDURE actualizarAdministrador (
-    _id_administrador INT,
+CREATE PROCEDURE actualizarAdministrador (  
+	_id int,
     _nombre VARCHAR(25),
     _primer_apellido VARCHAR(25),
     _segundo_apellido VARCHAR(25),
@@ -105,7 +83,7 @@ BEGIN
         segundo_apellido = _segundo_apellido,
         correo = _correo,
         telefono = _telefono
-    WHERE id_administrador = _id_administrador;
+    WHERE id = _id;
 END$$
 
 DELIMITER ;

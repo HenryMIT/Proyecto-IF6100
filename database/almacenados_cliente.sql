@@ -5,39 +5,32 @@ SET SQL_SAFE_UPDATES = 0;
 
 DELIMITER $$
 
-CREATE TRIGGER trg_id_cliente
-BEFORE INSERT ON Clientes
-FOR EACH ROW
-BEGIN
-  IF NEW.id_cliente IS NULL THEN
-    UPDATE counters
-      SET val = LAST_INSERT_ID(val + 1)
-    WHERE name = 'id_cliente';
-
-    SET NEW.id_cliente = LAST_INSERT_ID(); -- seguro por conexión
-  END IF;
-END$$
 
 -- Procedimiento para buscar cliente (ORIGINAL ADAPTADO)
 DROP PROCEDURE IF EXISTS buscarCliente$$
-CREATE PROCEDURE buscarCliente (_id INT, _id_cliente INT)
+CREATE PROCEDURE buscarCliente (_id INT)
 BEGIN
-    SELECT * FROM Clientes WHERE id = _id OR id_cliente = _id_cliente;
+    SELECT * FROM Clientes WHERE id = _id ;
 END$$
 
 
 DROP PROCEDURE IF EXISTS filtrarCliente$$
 CREATE PROCEDURE filtrarCliente (
-    _parametros varchar(250), -- %idCliente%&%nombre%&%apellido1%&%apellido2%&
+    _nombre varchar(255),
+    _primer_apellido varchar(255),
+    _segundo_apellido varchar(255),
     _pagina SMALLINT UNSIGNED, 
     _cantRegs SMALLINT UNSIGNED)
-begin
-    SELECT cadenaFiltro(_parametros, 'idCliente&nombre&apellido1&apellido2&') INTO @filtro;
-    SELECT concat("SELECT * from cliente where ", @filtro, " LIMIT ", 
-        _pagina, ", ", _cantRegs) INTO @sql;
-    PREPARE stmt FROM @sql;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
+begin	
+	IF _nombre IS NULL OR _nombre = '' AND  _primer_apellido IS NULL OR _primer_apellido = '' AND  _segundo_apellido IS NULL OR _segundo_apellido = '' THEN
+    SELECT * from Clientes LIMIT _pagina, _cantRegs;
+    ELSE 
+		SELECT * from Clientes
+		WHERE nombre LIKE CONCAT('%', _nombre,'%') 
+		OR primer_apellido LIKE CONCAT('%', _primer_apellido, '%')
+		OR segundo_apellido LIKE CONCAT('%', _segundo_apellido, '%')
+        LIMIT _pagina, _cantRegs;   
+	END IF;
 end$$
 
 -- Función para crear nuevo cliente (ORIGINAL ADAPTADO)
@@ -65,8 +58,7 @@ END$$
 -- Función para editar cliente (ORIGINAL ADAPTADO)
 DROP FUNCTION IF EXISTS editarCliente$$
 CREATE FUNCTION editarCliente (
-    _id INT,
-    _id_cliente INT,
+    _id INT,    
     _nombre VARCHAR(25),
     _primer_apellido VARCHAR(25),
     _segundo_apellido VARCHAR(25),
@@ -81,8 +73,7 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM Clientes WHERE id = _id) THEN
         SET no_encontrado = 1;
     ELSE
-        UPDATE Clientes SET
-            id_cliente = _id_cliente,
+        UPDATE Clientes SET            
             nombre = _nombre,
             primer_apellido = _primer_apellido,
             segundo_apellido = _segundo_apellido,
@@ -118,29 +109,7 @@ BEGIN
     RETURN _resp;
 END$$
 
--- Función para eliminar cliente por id_cliente (NUEVO)
-DROP FUNCTION IF EXISTS eliminarClientePorIdCliente$$
-CREATE FUNCTION eliminarClientePorIdCliente (_id_cliente INT) RETURNS INT
-READS SQL DATA
-DETERMINISTIC
-BEGIN
-    DECLARE _cant INT;
-    DECLARE _resp INT;
-    SET _resp = 0;
-    SELECT COUNT(id) INTO _cant FROM Clientes WHERE id_cliente = _id_cliente;
-    IF _cant > 0 THEN
-        SET _resp = 1;
-        -- Verificar si tiene facturas asociadas
-        SELECT COUNT(id_Factura) INTO _cant FROM Facturas 
-        WHERE id_usuario IN (SELECT id FROM Usuarios WHERE correo = (SELECT correo FROM Clientes WHERE id_cliente = _id_cliente));
-        IF _cant = 0 THEN
-            DELETE FROM Clientes WHERE id_cliente = _id_cliente;
-        ELSE 
-            SET _resp = 2; -- No se puede eliminar porque tiene facturas
-        END IF;
-    END IF;
-    RETURN _resp;
-END$$
+
 
 DELIMITER ;
 
