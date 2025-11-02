@@ -31,7 +31,7 @@ begin
 	END IF;
 end$$
 
--- Función para crear nuevo administrador (ORIGINAL ADAPTADO)
+-- Función para crear nuevo administrador (USA CONTADORES)
 DROP FUNCTION IF EXISTS nuevoAdministrador$$
 CREATE FUNCTION nuevoAdministrador (
     _nombre VARCHAR(25),
@@ -43,13 +43,19 @@ CREATE FUNCTION nuevoAdministrador (
 READS SQL DATA
 DETERMINISTIC
 BEGIN
-    DECLARE _cant INT;
-    SELECT COUNT(id) INTO _cant FROM Administradores WHERE id_administrador = _id_administrador;
-    IF _cant < 1 THEN
-        INSERT INTO Administradores(nombre, primer_apellido, segundo_apellido, correo, telefono) 
-            VALUES (_nombre, _primer_apellido, _segundo_apellido, _correo, _telefono);
-    END IF;
-    RETURN _cant;
+    DECLARE _nuevo_id INT;
+    
+    -- Incrementar el contador de administradores
+    UPDATE counters SET val = val + 1 WHERE name = 'id_administrador';
+    
+    -- Obtener el nuevo ID del contador
+    SELECT val INTO _nuevo_id FROM counters WHERE name = 'id_administrador';
+    
+    -- Insertar administrador con el ID del contador
+    INSERT INTO Administradores(id, nombre, primer_apellido, segundo_apellido, correo, telefono) 
+		VALUES (_nuevo_id, _nombre, _primer_apellido, _segundo_apellido, _correo, _telefono);
+    
+    RETURN _nuevo_id;
 END$$
 
 -- Función para eliminar administrador por ID (clave primaria) (ORIGINAL ADAPTADO)
@@ -84,6 +90,18 @@ BEGIN
         correo = _correo,
         telefono = _telefono
     WHERE id = _id;
+END$$
+
+-- ========================================
+-- TRIGGER: Eliminar usuario cuando se elimina administrador
+-- ========================================
+DROP TRIGGER IF EXISTS trigger_eliminar_usuario_admin$$
+CREATE TRIGGER trigger_eliminar_usuario_admin
+    AFTER DELETE ON Administradores
+    FOR EACH ROW
+BEGIN
+    -- Eliminar el usuario asociado al administrador eliminado
+    DELETE FROM Usuarios WHERE id_usuario = OLD.id;
 END$$
 
 DELIMITER ;

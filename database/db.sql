@@ -83,6 +83,5 @@ CREATE TABLE counters (
   val  INT NOT NULL
 );
 
+INSERT INTO counters (name, val) VALUES ('id_administrador', 4999);
 INSERT INTO counters (name, val) VALUES ('id_cliente', 999);
-INSERT INTO counters (name, val) VALUES ('id_administrador', 999);
-
