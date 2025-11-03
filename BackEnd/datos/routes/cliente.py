@@ -5,8 +5,7 @@ from sqlalchemy import text
 from databases import get_db
 from schemas.cliente import ClienteCreate, ClienteUpdate, ClienteResponse  # ClienteResponse opcional si tus SP devuelven esas columnas
 from typing import List, Optional
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 router = APIRouter(prefix="/clientes", tags=["clientes"])
 
@@ -77,7 +76,7 @@ def crear_cliente(cliente: ClienteCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Error en la base de datos")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-s
+
 @router.put("/{id}", response_model=None)
 def actualizar_cliente(id: int, cliente: ClienteUpdate, db: Session = Depends(get_db)):
     try:
