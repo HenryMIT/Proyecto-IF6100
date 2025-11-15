@@ -5,8 +5,7 @@ from sqlalchemy import text
 from databases import get_db
 from schemas.cliente import ClienteCreate, ClienteUpdate, ClienteResponse  # ClienteResponse opcional si tus SP devuelven esas columnas
 from typing import List, Optional
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 router = APIRouter(prefix="/clientes", tags=["clientes"])
 
