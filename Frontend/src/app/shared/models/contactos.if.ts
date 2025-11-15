@@ -21,9 +21,45 @@ export interface ContactoResponse {
 
 // Interfaz para el contacto completo (cuando se obtiene del backend)
 export interface Contacto extends ContactoData {
+  id_Mensaje: number;
+  fecha_creacion?: string;
+  estado?: boolean;
+}
+
+// Interfaz para la respuesta de listar contactos
+export interface ContactosListResponse {
+  contactos: Contacto[];
+}
+
+// Interfaz para la respuesta de búsqueda por estado
+export interface ContactosPorEstadoResponse {
+  estado_filtrado: boolean;
+  descripcion: string;
+  total_encontrados: number;
+  contactos: Contacto[];
+}
+
+// Interfaz para la respuesta de búsqueda por correo
+export interface ContactosPorCorreoResponse {
+  filtro_aplicado: string;
+  descripcion: string;
+  total_encontrados: number;
+  contactos: Contacto[];
+}
+
+// Interfaz para la respuesta de actualizar estado
+export interface ActualizarEstadoResponse {
   id: number;
-  fecha_creacion?: Date;
-  estado?: string;
+  nuevo_estado: boolean;
+  mensaje: string;
+  contactos_actualizados: number;
+}
+
+// Interfaz para la respuesta de eliminar contacto
+export interface EliminarContactoResponse {
+  id: number;
+  mensaje: string;
+  contactos_eliminados: number;
 }
 
 // ==========================================

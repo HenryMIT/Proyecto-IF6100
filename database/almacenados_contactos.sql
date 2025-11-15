@@ -20,7 +20,7 @@ BEGIN
     DECLARE _id_mensaje INT;
     -- Estado por defecto TRUE, pero tipo es obligatorio
     INSERT INTO Contactos(nombre, apellido, correo, mensaje, fecha, estado, tipo) 
-        VALUES (_nombre, _apellido, _correo, _mensaje, NOW(), TRUE, _tipo);
+        VALUES (_nombre, _apellido, _correo, _mensaje, NOW(), FALSE, _tipo);
     SET _id_mensaje = LAST_INSERT_ID();
     RETURN _id_mensaje;
 END$$
