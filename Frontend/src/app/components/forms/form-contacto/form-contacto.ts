@@ -1,7 +1,7 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ContactoService } from '../../../services/contacto';
+import { ContactoService } from '../../../shared/services/contacto';
 import { ContactoData, TipoConsulta } from '../../../shared/models/contactos.if';
 
 @Component({

@@ -4,7 +4,7 @@ import { catchError, map, Observable, of, retry, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { Token } from './token';
-import { IToken } from '../models/interfaces';
+import { IToken } from '../models/itoken';
 import { Usuario } from '../models/usuarios';
 
 

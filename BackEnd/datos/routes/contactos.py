@@ -18,19 +18,19 @@ def crear_contacto(contacto: ContactoCreate, db: Session = Depends(get_db)):
     db.commit()
     return {"id": id_nuevo, "mensaje": "Contacto creado exitosamente"}
 
-@router.post("/completo")
-def crear_contacto_completo(contacto: ContactoCreate, db: Session = Depends(get_db)):
-    """Crear contacto usando función nuevoContactoCompleto() con estado TRUE por defecto"""
-    params = contacto.dict()
-    params['estado'] = False  # Estado quemado como False por defecto
+# @router.post("/completo")
+# def crear_contacto_completo(contacto: ContactoCreate, db: Session = Depends(get_db)):
+#     """Crear contacto usando función nuevoContactoCompleto() con estado TRUE por defecto"""
+#     params = contacto.dict()
+#     params['estado'] = False  # Estado quemado como False por defecto
     
-    result = db.execute(
-        text("SELECT nuevoContactoCompleto(:nombre, :apellido, :correo, :mensaje, :estado, :tipo) as id_mensaje"),
-        params
-    )
-    id_nuevo = result.fetchone().id_mensaje
-    db.commit()
-    return {"id": id_nuevo, "mensaje": "Contacto completo creado exitosamente", "estado": True}
+#     result = db.execute(
+#         text("SELECT nuevoContactoCompleto(:nombre, :apellido, :correo, :mensaje, :estado, :tipo) as id_mensaje"),
+#         params
+#     )
+#     id_nuevo = result.fetchone().id_mensaje
+#     db.commit()
+#     return {"id": id_nuevo, "mensaje": "Contacto completo creado exitosamente", "estado": True}
 
 @router.get("/listar")
 def listar_contactos(limite: int = 0, offset: int = 0, db: Session = Depends(get_db)):
