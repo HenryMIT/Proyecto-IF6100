@@ -1,0 +1,148 @@
+<!-- Contact Form Component -->
+<div class="bg-white rounded-lg shadow-lg p-8">
+  <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">Contáctanos</h2>
+  
+  <!-- Mensajes de éxito y error -->
+  @if (mensajeExito) {
+    <div class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-md">
+      {{ mensajeExito }}
+    </div>
+  }
+  
+  @if (mensajeError) {
+    <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md">
+      {{ mensajeError }}
+    </div>
+  }
+  
+  <form [formGroup]="contactoForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    <!-- Nombre y Apellido -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label for="nombre" class="block text-sm font-medium text-gray-700 mb-2">
+          Nombre *
+        </label>
+        <input 
+          type="text" 
+          id="nombre" 
+          formControlName="nombre"
+          [class.border-red-500]="isFieldInvalid('nombre')"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Tu nombre"
+        >
+        @if (isFieldInvalid('nombre')) {
+          <div class="mt-1 text-sm text-red-600">
+            {{ getFieldError('nombre') }}
+          </div>
+        }
+      </div>
+      <div>
+        <label for="apellido" class="block text-sm font-medium text-gray-700 mb-2">
+          Apellido *
+        </label>
+        <input 
+          type="text" 
+          id="apellido" 
+          formControlName="apellido"
+          [class.border-red-500]="isFieldInvalid('apellido')"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Tu apellido"
+        >
+        @if (isFieldInvalid('apellido')) {
+          <div class="mt-1 text-sm text-red-600">
+            {{ getFieldError('apellido') }}
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div>
+      <label for="correo" class="block text-sm font-medium text-gray-700 mb-2">
+        Correo Electrónico *
+      </label>
+      <input 
+        type="email" 
+        id="correo" 
+        formControlName="correo"
+        [class.border-red-500]="isFieldInvalid('correo')"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        placeholder="tu@email.com"
+      >
+      @if (isFieldInvalid('correo')) {
+        <div class="mt-1 text-sm text-red-600">
+          {{ getFieldError('correo') }}
+        </div>
+      }
+    </div>
+
+    <!-- Tipo de Consulta -->
+    <div>
+      <label for="tipo" class="block text-sm font-medium text-gray-700 mb-2">
+        Tipo de Consulta *
+      </label>
+      <select 
+        id="tipo" 
+        formControlName="tipo"
+        [class.border-red-500]="isFieldInvalid('tipo')"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      >
+        <option value="">Selecciona una opción</option>
+        @for (tipoOpcion of tiposConsulta; track tipoOpcion.id) {
+          <option [value]="tipoOpcion.id" [title]="tipoOpcion.descripcion">
+            {{ tipoOpcion.nombre }}
+          </option>
+        }
+      </select>
+      @if (isFieldInvalid('tipo')) {
+        <div class="mt-1 text-sm text-red-600">
+          {{ getFieldError('tipo') }}
+        </div>
+      }
+    </div>
+
+    <!-- Mensaje -->
+    <div>
+      <label for="mensaje" class="block text-sm font-medium text-gray-700 mb-2">
+        Tu Mensaje *
+      </label>
+      <textarea 
+        id="mensaje" 
+        formControlName="mensaje"
+        rows="5"
+        [class.border-red-500]="isFieldInvalid('mensaje')"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+        placeholder="Escribe tu consulta o mensaje aquí..."
+      ></textarea>
+      @if (isFieldInvalid('mensaje')) {
+        <div class="mt-1 text-sm text-red-600">
+          {{ getFieldError('mensaje') }}
+        </div>
+      }
+    </div>
+
+    <!-- Botón de Envío -->
+    <div class="text-center">
+      <button 
+        type="submit"
+        [disabled]="enviando"
+        [class.opacity-50]="enviando"
+        [class.cursor-not-allowed]="enviando"
+        class="bg-blue-600 text-white font-medium px-8 py-3 rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      >
+        @if (!enviando) {
+          <span>Enviar Mensaje</span>
+        }
+        @if (enviando) {
+          <span class="flex items-center justify-center">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Enviando...
+          </span>
+        }
+      </button>
+    </div>
+  </form>
+</div>
