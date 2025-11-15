@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from databases import get_db
-from schemas.productos import ProductoCreate, ProductoUpdate
+from schemas.productos import ProductoCreate, ProductoUpdate, ProductoResponse as ProductoR
 
 router = APIRouter(prefix="/productos", tags=["productos"])
 
@@ -21,23 +21,24 @@ def crear_producto(prod: ProductoCreate, db: Session = Depends(get_db)):
 
 # OBTENER TODOS (usa listar o filtros)
 @router.get("/")
-def listar_productos(categoria: int = None, busqueda: str = None, db: Session = Depends(get_db)):
+def listar_productos(categoria: int = None, busqueda: str = None, db: Session = Depends(get_db))->list[ProductoR]:
     if categoria:
         result = db.execute(text("CALL buscarProductosPorCategoria(:cat)"), {"cat": categoria})
     elif busqueda:
         result = db.execute(text("CALL buscarProductosPorDescripcion(:desc)"), {"desc": busqueda})
     else:
-        result = db.execute(text("CALL listarProductos()"))
-    return result.fetchall()
+        result = db.execute(text("CALL listarProductos()")).fetchall()
+    result = [ProductoR.from_orm(row) for row in result]
+    return result
 
 # OBTENER POR ID (usa buscarProductoPorId)
 @router.get("/{id}")
 def obtener_producto(id: int, db: Session = Depends(get_db)):
-    result = db.execute(text("CALL buscarProductoPorId(:id)"), {"id": id})
-    data = result.fetchall()
-    if not data:
+    result = db.execute(text("CALL buscarProductoPorId(:id)"), {"id": id}).first()._asdict()
+    
+    if not result:
         raise HTTPException(status_code=404, detail="Producto no encontrado")
-    return data[0]
+    return result
 
 # CTUALIZAR (usa actualizarProducto)
 @router.put("/{id}")

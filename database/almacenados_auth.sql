@@ -17,7 +17,7 @@ BEGIN
     WHERE (id_usuario = _id_usuario OR correo = _id_usuario) AND tkRef = _tkRef;
 END$$
 
--- Función para modificar token (ADAPTADA)
+-- Función para modificar token 
 DROP FUNCTION IF EXISTS modificarToken$$
 CREATE FUNCTION modificarToken (_id_usuario VARCHAR(100), _tkRef VARCHAR(255)) 
 RETURNS INT 
@@ -53,7 +53,7 @@ READS SQL DATA
 BEGIN    
     DECLARE _user_id INT;
     
-    SELECT id INTO _user_id 
+    SELECT id_usuario INTO _user_id 
     FROM Usuarios 
     WHERE correo = _correo AND clave = SHA2(_clave, 256);
     
@@ -72,13 +72,18 @@ CREATE PROCEDURE obtenerDatosUsuario(_id_usuario INT)
 BEGIN
     SELECT 
         u.id,
+        if(u.rol = 1, c.nombre, a.nombre) AS nombre,
+        if(u.rol = 1, c.primer_apellido, a.primer_apellido) AS primer_apellido,
+        if(u.rol = 1, c.segundo_apellido, a.segundo_apellido) AS segundo_apellido, 
         u.id_usuario,
         u.rol,
         u.correo,
         u.ultimo_acceso,
         u.tkRef                
     FROM Usuarios u
-    WHERE u.id = _id_usuario;
+    LEFT JOIN `Administradores` a ON u.id_usuario = a.id
+    LEFT JOIN `Clientes` c ON u.id_usuario = c.id
+    WHERE u.id_usuario = _id_usuario;
 END$$
 
 -- Función para cambiar contraseña

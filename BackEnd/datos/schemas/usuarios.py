@@ -24,6 +24,10 @@ class UsuarioRead(UsuarioBase):
     correo: EmailStr
     tkr: Optional[str]
 
+class UsuarioRefreshToken(BaseModel):
+    id_usuario: int
+    tkRef: str
+
 class UsuarioRecuperar(BaseModel):
     correo: EmailStr
 
