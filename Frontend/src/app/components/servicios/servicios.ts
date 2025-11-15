@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormContacto } from '../forms/form-contacto/form-contacto';
-import { Footer } from '../footer/footer';
 import { TipoConsulta } from '../../shared/models/contactos.if';
 
 @Component({
   selector: 'app-servicios',
-  imports: [FormContacto, Footer],
+  imports: [FormContacto],
   templateUrl: './servicios.html',
   styleUrl: './servicios.css'
 })

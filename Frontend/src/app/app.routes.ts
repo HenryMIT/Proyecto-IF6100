@@ -6,7 +6,7 @@ import { Proyectos } from './components/proyectos/proyectos';
 import { Servicios } from './components/servicios/servicios';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: Home },
   { path: 'login', component: Login },
   { path: 'about-us', component: AboutUs },

@@ -1,3 +1,27 @@
-<div class="max-w-mid mx-auto mt-6 items-center justify-center ">
+<main class="min-h-screen bg-gray-50 flex items-center justify-center">
 
-</div>
+    <section class="size-150 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div class="flex items-center justify-center mt-20">
+            <form id="miFormulario" [formGroup]="frmLogin" (ngSubmit)="onLogin()">
+
+                <mat-form-field class="w-full">
+                    <mat-label>Correo</mat-label>
+                    <input matInput formControlName="idUsuario" type="email">
+                </mat-form-field>
+
+                <mat-form-field class="w-full">
+                    <mat-label>Contraseña</mat-label>
+                    <input matInput formControlName="passw" type="password">
+                </mat-form-field>
+
+                @if(errorLogin()){
+                <small class="text-red-600">Usuario o Contraseña no valida</small>
+                }
+                <input type="hidden" formControlName="id">
+                <button mat-button raised-button type="submit" form="miFormulario">Aceptar</button>
+            </form>
+        </div>
+
+
+    </section>
+</main>
