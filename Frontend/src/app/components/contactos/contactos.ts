@@ -28,7 +28,7 @@ export class Contactos implements AfterViewInit {
   
   // PARA LA TABLA 
   panelOpenState = signal(false);
-  columnas: string[] = ['id_Mensaje', 'nombre', 'apellido', 'correo', 'tipo', 'estado', 'fecha_creacion', 'botonera'];
+  columnas: string[] = ['id_Mensaje', 'nombre', 'apellido', 'correo', 'tipo', 'estado', 'fecha', 'botonera'];
   filtro: any;
   
   // signal para manejar los datos de la tabla de forma reactiva

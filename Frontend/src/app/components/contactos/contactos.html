@@ -101,10 +101,10 @@
         </ng-container>
         
         <!-- Fecha de Creación -->
-        <ng-container matColumnDef="fecha_creacion">
+        <ng-container matColumnDef="fecha">
           <th mat-header-cell *matHeaderCellDef>Fecha</th>
           <td mat-cell *matCellDef="let element">
-            {{element.fecha_creacion ? (element.fecha_creacion | date:'dd/MM/yyyy') : 'No disponible'}}
+            {{element.fecha ? (element.fecha | date:'dd/MM/yyyy') : 'No disponible'}}
           </td>
         </ng-container>
 

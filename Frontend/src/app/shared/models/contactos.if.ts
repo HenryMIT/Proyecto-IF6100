@@ -22,7 +22,7 @@ export interface ContactoResponse {
 // Interfaz para el contacto completo (cuando se obtiene del backend)
 export interface Contacto extends ContactoData {
   id_Mensaje: number;
-  fecha_creacion?: string;
+  fecha?: string;
   estado?: boolean;
 }
 
