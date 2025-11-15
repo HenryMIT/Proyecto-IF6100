@@ -46,4 +46,7 @@ export class Header {
     }
   }
 
+  signin(){
+    this.router.navigate(['/login'])
+  }
 }

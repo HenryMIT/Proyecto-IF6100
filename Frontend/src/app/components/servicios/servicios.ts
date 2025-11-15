@@ -18,8 +18,10 @@ export class Servicios implements OnInit {
   ngOnInit() {
     // Obtener el parámetro de tipo de la URL
     this.route.params.subscribe(params => {
-      if (params['tipo']) {
-        this.tipoPreseleccionado = parseInt(params['tipo']);
+      let form = document.getElementById("contacto")
+      form?.scrollIntoView({ behavior: "smooth", block: "start" })      
+      if (params['tipo']) {        
+        this.tipoPreseleccionado = parseInt(params['tipo']);        
       }
     });
   }
