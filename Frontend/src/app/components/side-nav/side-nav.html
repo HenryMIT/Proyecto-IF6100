@@ -1,0 +1,31 @@
+<aside id="default-sidebar" [ngClass]="collapsed() ? 'collapsed w-16 md:w-16' : 'expanded md:w-64 w-64'" class="h-full transition-all" aria-label="Sidebar">
+    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-200 dark:fondo_oscuro ">
+
+        <div class="flex items-center justify-center gap-3">
+            <!-- Logo -->
+            <div class="bg-white mb-10 mt-5 logo-container">
+                <img src="logo.jpg" alt="RUMI" class="h-30 w-auto logo-img" />
+            </div>            
+        </div>
+
+        @if(svrAuth.userActual.rol){
+        <mat-nav-list>
+            @for(item of menuItem(); track item.label){
+
+            <a href="" [routerLink]="item.route"
+                class="nav-item flex items-center p-6 mb-3 border-b-5 border-neutral-950 dark:bg-neutral-900 text-gray-900 rounded-2xl dark:text-white hover:bg-gray-300 dark:hover:bg-neutral-700 group">
+
+                <mat-icon matListItemIcon 
+                    class="nav-icon shrink-0 w-5 h-5 text-gray-500 transition duration-75">
+                    {{item.icon}}
+                </mat-icon>
+
+                <span *ngIf="!collapsed()" class="md:block hidden flex-1 ms-3 whitespace-nowrap">{{item.label}}</span>
+            </a>
+
+            }
+        </mat-nav-list>
+        }
+
+    </div>
+</aside>

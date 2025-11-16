@@ -1,0 +1,47 @@
+<header class="h-30 justify-between px-4 text-white" id="frontend-contend">
+
+
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+
+
+          <div id="menu" class="flex items-center gap-3 pt-5" (click)="toggleMenu()" role="button" tabindex="0">
+              <i class="fa-solid fa-bars fa-2x"></i>
+          </div>
+
+        <!-- Contiene los enlaces a los otra partes de la pagina -->
+        <div class="hidden w-full md:block md:w-auto" id="navbar-default">
+            <ul
+                class="font-medium text-base flex flex-col p-4 md:p-0 mt-4 border md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
+                
+                <li>
+                    @if(srvAuth.isLoggedIn()){
+                    <button class="flex gap-2 bg-black text-white text-sm font-medium px-4 mt-3 py-3 rounded-md hover:bg-gray-800 transition-colors" [matMenuTriggerFor]="menu" #menuTrigger>
+                        <mat-icon>person</mat-icon>
+                        <h1>{{srvAuth.userActual.nombre}}</h1>
+                    </button>
+                    <mat-menu  #menu="matMenu" >
+                        <button class="bg-neutral-900 text-white" (click)="cambiarContrasena()" 
+                           mat-menu-item>
+                            Cambiar Contraseña
+                        </button>
+                        <button (click)="cerrarSesion()" 
+                           mat-menu-item>
+                            Cerrar Sesion
+                        </button>
+                    </mat-menu>
+                    }
+                    @else {
+                    <button (click)="signin()"
+                        class="bg-black text-white text-sm font-medium px-4 mt-3 py-3 rounded-md hover:bg-gray-800 transition-colors">
+                        Inicio Sesion
+                    </button>
+                    }
+
+
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>

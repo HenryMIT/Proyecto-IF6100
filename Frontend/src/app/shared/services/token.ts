@@ -17,8 +17,8 @@ export class Token {
 
   constructor() { }
 
-  public set Token(tokens: IToken) {
-    localStorage.setItem(this.JWT_TOKEN, tokens.token);
+  public set Token(token: string) {
+    localStorage.setItem(this.JWT_TOKEN, token);
   }
 
   public set RefToken(tkRef: string) {
@@ -26,7 +26,7 @@ export class Token {
   }
 
   public set Tokens(tokens: IToken) {
-    this.Token = tokens;
+    this.Token = tokens.token;
     this.RefToken = tokens.tkRef;
   }
 

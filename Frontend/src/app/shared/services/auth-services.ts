@@ -28,19 +28,20 @@ export class AuthServices {
       .set('username', datos.correo)
       .set('password', datos.passw);
     const header = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' })
-
+   
     return this.http
-      .post<IToken>(`${_SERVER}/auth/login`, body.toString(), { headers: header })
+      .post<IToken>(`${_SERVER}/auth/login`, body.toString(), { headers: header})
       .pipe(
         retry(1),
         tap(
-          (tokens) => {
+          (tokens) => {                        
             this.doLogin(tokens);
             this.router.navigate(['home']);
           }
         ),
         map(() => true),
         catchError((error) => {
+          
           return of(error.status)
         })
       )

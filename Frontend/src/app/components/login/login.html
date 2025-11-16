@@ -1,24 +1,39 @@
 <main class="min-h-screen bg-gray-50 flex items-center justify-center">
 
-    <section class="size-150 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div class="flex items-center justify-center mt-20">
+    <section class="size-140 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div class="pt-5">
+            <h3 class="text-3xl text-center">Inicio de Sesión</h3>
+        </div>
+
+        <div class="pr-10 pl-10 justify-center mt-10 ">
+
             <form id="miFormulario" [formGroup]="frmLogin" (ngSubmit)="onLogin()">
 
-                <mat-form-field class="w-full">
-                    <mat-label>Correo</mat-label>
-                    <input matInput formControlName="idUsuario" type="email">
-                </mat-form-field>
+                <h2 class="font-bold p-2 text-base">Correo Electronico</h2>
+                <input class="w-full mb-5 border-gray-300 rounded-md" formControlName="correo" type="text" placeholder="Ejemplo:email@email.com">
 
-                <mat-form-field class="w-full">
-                    <mat-label>Contraseña</mat-label>
-                    <input matInput formControlName="passw" type="password">
-                </mat-form-field>
+                <h2 class="font-bold p-2 text-base">Contraseña</h2>
+                <input class="w-full mb-5 border-gray-300 rounded-md" formControlName="passw" type="password"
+                    placeholder="Ejemplo:passwordSeguro23!">
 
+                <a href=""><p class="underline">
+                    ¿Olvido su Contraseña?
+                </p></a>
                 @if(errorLogin()){
                 <small class="text-red-600">Usuario o Contraseña no valida</small>
                 }
                 <input type="hidden" formControlName="id">
-                <button mat-button raised-button type="submit" form="miFormulario">Aceptar</button>
+                <button
+                    class="w-full bg-black text-white text-sm font-medium px-4 py-2 mt-5 mb-5 rounded-md hover:bg-gray-800 transition-colors"
+                    type="submit" form="miFormulario">
+                    Iniciar Sesión
+                </button>
+                
+                <a href="">
+                    <p class="underline text-center">
+                    ¿No estas registrado? Registrate
+                    </p>                    
+                </a>
             </form>
         </div>
 
