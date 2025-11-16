@@ -1,0 +1,15 @@
+/* Ocultar scrollbar pero mantener funcionalidad de scroll */
+
+.form-dialog {
+  /* Para Firefox */
+  scrollbar-width: none;
+  /* Para IE y Edge antiguos */
+  -ms-overflow-style: none;
+}
+
+/* Para navegadores Webkit (Chrome, Safari) */
+.form-dialog::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}

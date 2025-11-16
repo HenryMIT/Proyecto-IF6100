@@ -56,8 +56,7 @@ CREATE TABLE Productos (
     cantidad INT NOT NULL,
     descuento DECIMAL(10,2),
     precio DECIMAL(10,2) NOT NULL,
-    imagen_producto VARCHAR(200),
-    FOREIGN KEY (id_Categoria) REFERENCES Categoria_productos(id_Categoria)
+    imagen_producto VARCHAR(200)
 );
 CREATE TABLE Facturas (
     id_Factura INT PRIMARY KEY AUTO_INCREMENT,

@@ -1,6 +1,7 @@
 # app/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from routes.contactos import router as contactos_router
 from routes.cliente import router as routercliente
 from routes.administrador import router as administrador_router
@@ -11,9 +12,12 @@ from routes.facturas_productos import router as routerfacturas_productos
 
 app = FastAPI(
     title="API Equipo Rummi - Electrodomésticos",
-    description="API para gestión de electrodomésticos y equipos de cocina",        
+    description="API para gestión de electrodomésticos y equipos de cocina",
     version="1.0.0"
 )
+
+# Servir archivos estáticos (imágenes)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 
 app.add_middleware(

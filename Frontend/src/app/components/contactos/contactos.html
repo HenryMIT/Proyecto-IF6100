@@ -1,15 +1,15 @@
-<mat-card>
-  <div class="p-6 bg-blue-300 border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-    <mat-card-header class="bg-gray-200 h-15 flex justify-center">
-      <mat-card-title class="!font-extrabold text-[1.5rem]">
-        Catálogo Contactos
-      </mat-card-title>
-    </mat-card-header>
+<mat-card class="p-0!">
+  <mat-card-header class="bg-gray-200 h-15 flex justify-center">
+    <mat-card-title class="font-extrabold! text-[1.5rem]">
+      Gestión de Contactos
+    </mat-card-title>
+  </mat-card-header>
 
-    <mat-card-content class="relative overflow-x-auto shadow-md sm:rounded-lg">
-      
+  <mat-card-content class="p-0! bg-white">
+
       <!-- Panel de filtros expansible -->
-      <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false); limpiarFiltros()">
+      <div class="p-4">
+        <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false); limpiarFiltros()">
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{panelOpenState() ? 'Cerrar Filtros' : 'Abrir Filtros'}}
@@ -47,20 +47,24 @@
         
         <!-- Botones de filtro por estado -->
         <div class="flex gap-2 mt-4">
-          <button mat-raised-button color="primary" (click)="cargarContactos()">
+          <button (click)="cargarContactos()"
+            class="px-4 py-2 text-white bg-blue-900 hover:bg-blue-950 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm focus:outline-none">
             Todos los Contactos
           </button>
-          <button mat-raised-button color="accent" (click)="onFiltrarPorEstado(false)">
+          <button (click)="onFiltrarPorEstado(false)"
+            class="px-4 py-2 text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:ring-orange-300 font-medium rounded-lg text-sm focus:outline-none">
             Solo Pendientes
           </button>
-          <button mat-raised-button color="warn" (click)="onFiltrarPorEstado(true)">
+          <button (click)="onFiltrarPorEstado(true)"
+            class="px-4 py-2 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm focus:outline-none">
             Solo Revisados
           </button>
         </div>
       </mat-expansion-panel>
+      </div>
 
       <!-- Tabla de contactos -->
-      <table mat-table [dataSource]="dataSource()">
+      <table mat-table [dataSource]="dataSource()" class="w-full">
       
         <!-- ID Mensaje -->
         <ng-container matColumnDef="id_Mensaje">
@@ -120,11 +124,11 @@
 
               <!-- Botón de cambiar estado -->
               <button (click)="onCambiarEstado(element.id_Mensaje, element.estado || false)"
-                [class]="element.estado ? 
-                  'flex focus:outline-none text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:ring-orange-300 font-medium rounded-lg text-sm px-3 py-1' :
-                  'flex focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-3 py-1 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800'"
+                [class]="element.estado ?
+                  'flex focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-3 py-1 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800' :
+                  'flex focus:outline-none text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:ring-orange-300 font-medium rounded-lg text-sm px-3 py-1'"
                 [title]="element.estado ? 'Marcar como pendiente' : 'Marcar como revisado'">
-                <mat-icon>{{element.estado ? 'undo' : 'check_circle'}}</mat-icon>
+                <mat-icon>{{element.estado ? 'check_circle' : 'pending'}}</mat-icon>
               </button>
 
               <!-- Botón de eliminar -->
@@ -144,17 +148,10 @@
       </table>
       
       <!-- Paginador -->
-      <mat-paginator [pageSizeOptions]="[5, 10, 20]" 
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]"
                      showFirstLastButtons
                      aria-label="Seleccionar página de contactos">
       </mat-paginator>
-      
+
     </mat-card-content>
-    
-    <mat-card-footer class="bg-gray-200 h-15 flex items-center justify-center">
-      <span class="font-extrabold text-[1.5rem]">
-        Gestión de Contactos
-      </span>
-    </mat-card-footer>
-  </div>
 </mat-card>

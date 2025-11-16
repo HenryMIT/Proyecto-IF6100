@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import { FormProductoComponent } from '../forms/form-producto/form-producto';
 @Component({
   selector: 'app-home',
   imports: [],

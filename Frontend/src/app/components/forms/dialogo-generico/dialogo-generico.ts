@@ -17,12 +17,13 @@ export interface DialogData {
   selector: 'app-dialogo-generico',
   standalone: true,
   imports: [MatDialogModule, MatButtonModule, MatIconModule, CommonModule],
+  styleUrls: ['./dialogo-generico.css'],
   template: `
     <div class="p-6">
       <!-- Header con ícono y título -->
       <div class="flex items-center mb-4">
-        <mat-icon 
-          [class]="getIconoClass()" 
+        <mat-icon
+          [class]="getIconoClass()"
           class="mr-3 text-3xl">
           {{getIcono()}}
         </mat-icon>
@@ -30,27 +31,27 @@ export interface DialogData {
           {{getTitulo()}}
         </h2>
       </div>
-      
+
       <!-- Mensaje -->
       <div class="mb-6">
         <p class="text-gray-700 text-base leading-relaxed">
           {{data.mensaje}}
         </p>
       </div>
-      
+
       <!-- Botones -->
       <div class="flex justify-end space-x-3">
         @if (data.mostrarCancelar !== false && data.tipo === 'confirmacion') {
-          <button 
-            mat-button 
+          <button
+            mat-button
             (click)="onCancelar()"
             class="px-4 py-2 text-gray-600 hover:text-gray-800">
             {{data.textoCancelar || 'Cancelar'}}
           </button>
         }
-        
-        <button 
-          mat-raised-button 
+
+        <button
+          mat-raised-button
           [color]="getColorBoton()"
           (click)="onAceptar()"
           class="px-6 py-2">
@@ -58,12 +59,7 @@ export interface DialogData {
         </button>
       </div>
     </div>
-  `,
-  styles: [`
-    .icon-success { color: #16a34a; }
-    .icon-error { color: #dc2626; }
-    .icon-warning { color: #ca8a04; }
-  `]
+  `
 })
 export class DialogoGenerico {
   
