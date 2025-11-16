@@ -1,5 +1,15 @@
+<!-- @if(svrAuth.userActual.rol == 2 ){ -->
+@if(true) {
+    <section class="flex">
+    <app-side-nav></app-side-nav>
+    <div class="w-full">
+        <app-admin-header></app-admin-header>
+        <router-outlet />
+    </div>
+    </section>
+}
+@else {
 <app-header></app-header>
-
 <router-outlet />
-
 <app-footer></app-footer>
+}

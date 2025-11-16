@@ -1,16 +1,21 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TipoConsulta } from '../../shared/models/contactos.if';
+import { AuthServices } from '../../shared/services/auth-services';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu'
 
 @Component({
   selector: 'app-header',
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, MatIconModule, MatMenuModule],
   templateUrl: './header.html',
   styleUrl: './header.css'
 })
 export class Header {
   
+  srvAuth = inject(AuthServices);
+
   constructor(private router: Router) {}
   
   // Estado del dropdown de servicios
@@ -48,5 +53,13 @@ export class Header {
 
   signin(){
     this.router.navigate(['/login'])
+  }
+
+  cambiarContrasena(){
+
+  }
+
+  cerrarSesion(){
+    this.srvAuth.loggOut();
   }
 }
