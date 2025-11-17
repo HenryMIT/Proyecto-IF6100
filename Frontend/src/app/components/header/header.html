@@ -22,10 +22,13 @@
             <ul
                 class="font-medium text-base flex flex-col p-4 md:p-0 mt-4 border md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
                 <li>
-                    <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent" aria-current="page">Inicio</a>
+                    <a href="#"
+                        class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                        aria-current="page">Inicio</a>
                 </li>
                 <li>
-                    <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Catálogo</a>
+                    <a href="#"
+                        class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Catálogo</a>
                 </li>
                 <li class="relative">
                     <!-- Botón de Servicios con dropdown -->
@@ -66,25 +69,28 @@
                     }
                 </li>
                 <li>
-                    <a routerLink="/proyectos" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Proyectos</a>
+                    <a routerLink="/proyectos"
+                        class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Proyectos</a>
                 </li>
                 <li>
-                    <a routerLink="/about-us" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Sobre Nosotros</a>
+                    <a routerLink="/about-us"
+                        class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Sobre
+                        Nosotros</a>
                 </li>
                 <!-- ...otros elementos del menú... -->
                 <li>
                     @if(srvAuth.isLoggedIn()){
-                    <button class="flex gap-2 bg-black text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-800 transition-colors" [matMenuTriggerFor]="menu" #menuTrigger>
+                    <button
+                        class="flex gap-2 bg-black text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-800 transition-colors"
+                        [matMenuTriggerFor]="menu" #menuTrigger>
                         <mat-icon>person</mat-icon>
                         <h1>{{srvAuth.userActual.nombre}}</h1>
                     </button>
-                    <mat-menu  #menu="matMenu" >
-                        <button class="bg-neutral-900 text-white" (click)="cambiarContrasena()"
-                           mat-menu-item>
+                    <mat-menu #menu="matMenu">
+                        <button class="bg-neutral-900 text-white" (click)="cambiarContrasena()" mat-menu-item>
                             Cambiar Contraseña
                         </button>
-                        <button (click)="cerrarSesion()"
-                           mat-menu-item>
+                        <button (click)="cerrarSesion()" mat-menu-item>
                             Cerrar Sesion
                         </button>
                     </mat-menu>
@@ -99,4 +105,3 @@
             </ul>
         </div>
     </div>
-

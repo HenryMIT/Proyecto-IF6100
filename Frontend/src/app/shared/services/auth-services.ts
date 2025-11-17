@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 import { Token } from './token';
 import { IToken } from '../models/itoken';
 import { Usuario } from '../models/usuarios';
-
+import { ClienteRegister } from '../models/clientes'
 
 const _SERVER = environment.Servidor
 const LIMITE_REFRESH = 60
@@ -28,30 +28,50 @@ export class AuthServices {
       .set('username', datos.correo)
       .set('password', datos.passw);
     const header = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' })
-   
+
     return this.http
-      .post<IToken>(`${_SERVER}/auth/login`, body.toString(), { headers: header})
+      .post<IToken>(`${_SERVER}/auth/login`, body.toString(), { headers: header })
       .pipe(
         retry(1),
         tap(
-          (tokens) => {                        
+          (tokens) => {
             this.doLogin(tokens);
             this.router.navigate(['home']);
           }
         ),
         map(() => true),
         catchError((error) => {
-          
+
           return of(error.status)
         })
       )
   }
 
-  public loggOut(){
-    if(this.isLoggedIn()){
+  public register(datos: ClienteRegister) {
+    return this.http.post<IToken>(`${_SERVER}/auth/register`, datos).pipe(
+      retry(1),
+      tap(
+        (tokens) => {
+          this.doLogin(tokens);
+          this.router.navigate(['home']);
+        }
+      ),
+      map(() => true),
+      catchError((error) => {
+        return of(error.status)
+      })
+    )
+  }
+
+  public loggOut() {
+    if (this.isLoggedIn()) {
       this.http
-      .delete(`${_SERVER}/auth/${this.userActual.idUsuario}`)
-      .subscribe();
+        .delete(`${_SERVER}/auth/${this.userActual.idUsuario}`)
+        .subscribe(
+          (res)=>{
+            this.router.navigate(['login']);
+          }
+        );
       this.doLoggOut();
     }
   }
@@ -62,7 +82,7 @@ export class AuthServices {
   }
 
   private doLoggOut() {
-    if (this.srvToken.Token){
+    if (this.srvToken.Token) {
       this.srvToken.clearTokens();
     }
     this.userActuals.set(this.userActual);
@@ -74,7 +94,7 @@ export class AuthServices {
   }
 
   public get userActual(): Usuario {
-    if (!this.srvToken.Token){
+    if (!this.srvToken.Token) {
       return new Usuario()
     }
     const tokenD = this.srvToken.decodeToken();
@@ -92,11 +112,11 @@ export class AuthServices {
       if (tiempo <= 0) {
         this.loggOut();
         return false;
-      }      
+      }
       if (tiempo > 0 && tiempo <= LIMITE_REFRESH) {
         this.srvToken.refreshTokens();
       }
-      return true;      
+      return true;
     } else {
       this.loggOut();
       return false;

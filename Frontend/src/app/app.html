@@ -1,6 +1,6 @@
 <!-- Temporal: Mostrando siempre el side-nav y admin-header -->
-@if(true) {
-    <section class="flex">
+@if(svrAuth.userActual.rol == 2) {
+    <section class="flex h-full">
     <app-side-nav></app-side-nav>
     <div class="w-full">
         <app-admin-header></app-admin-header>

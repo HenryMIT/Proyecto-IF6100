@@ -1,0 +1,140 @@
+<main class="min-h-screen bg-gray-50 flex items-center justify-center">
+    <section id="register" class="w-140 h-auto p-3 mt-2 mb-2 bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div class="pt-4">
+            <h3 class="text-3xl text-center">Registrate</h3>
+        </div>
+        <div class="pr-5 pl-5 justify-center mt-5 ">
+
+            <form id="miFormRegister" [formGroup]="frmRegister" (ngSubmit)="onRegister()">
+
+                <h2 class="font-bold p-2 text-base">Nombre</h2>
+                <input class="w-full mb-5 border-gray-300 rounded-md" formControlName="nombre" type="text"
+                    placeholder="------------">
+
+                @if(register['nombre'].invalid && register['nombre'].touched){
+                @if(register['nombre'].errors!['required']){
+                <small class="text-red-600">El nombre es obligatorio</small><br>
+                }
+                @if(register['nombre'].errors!['minlength']){
+                <small class="text-red-600">Nombre demasiado corto</small><br>
+                }
+                @if(register['nombre'].errors!['maxlength']){
+                <small class="text-red-600">Nombre demasiado largo</small><br>
+                }
+                @if(register['nombre'].errors!['pattern']){
+                <small class="text-red-600">Formato de nombre no válido</small><br>
+                }
+                }
+
+                <h2 class="font-bold p-2 text-base">Primer Apellido</h2>
+                <input class="w-full mb-5 border-gray-300 rounded-md" formControlName="apellido1" type="text"
+                    placeholder="------------">
+
+                @if(register['apellido1'].invalid && register['apellido1'].touched){
+                @if(register['apellido1'].errors!['required']){
+                <small class="text-red-600">El primer apellido es obligatorio</small><br>
+                }
+                @if(register['apellido1'].errors!['minlength']){
+                <small class="text-red-600">Primer apellido demasiado corto</small><br>
+                }
+                @if(register['apellido1'].errors!['maxlength']){
+                <small class="text-red-600">Primer apellido demasiado largo</small><br>
+                }
+                @if(register['apellido1'].errors!['pattern']){
+                <small class="text-red-600">Formato del primer apellido no válido</small><br>
+                }
+                }
+
+                <h2 class="font-bold p-2 text-base">Segundo Apellido</h2>
+                <input class="w-full mb-5 border-gray-300 rounded-md" formControlName="apellido2" type="text"
+                    placeholder="------------">
+
+                @if(register['apellido2'].invalid && register['apellido2'].touched){
+                @if(register['apellido1'].errors!['maxlength']){
+                <small class="text-red-600">Segundo apellido demasiado largo</small><br>
+                }
+                }
+
+                <h2 class="font-bold p-2 text-base">Correo Electronico</h2>
+                <input class="w-full mb-5 border-gray-300 rounded-md" formControlName="correo" type="email"
+                    placeholder="Ejemplo: Ejemplo:email@email.com">
+
+                @if(register['correo'].invalid && register['correo'].touched){
+                @if(register['correo'].errors!['required']){
+                <small class="text-red-600">El correo electronico es obligatorio. </small><br>
+                }
+                @if(register['correo'].errors!['email']){
+                <small class="text-red-600">Formato de correo electronico no valido</small><br>
+                }
+                }
+
+                <h2 class="font-bold p-2 text-base">Telefono</h2>
+                <input class="w-full mb-5 border-gray-300 rounded-md" formControlName="telefono" type="tel"
+                    placeholder="Ejemplo: 12345678">
+
+                @if(register['telefono'].invalid && register['telefono'].touched){
+                @if(register['telefono'].errors!['pattern']){
+                <small class="text-red-600">Numero de digitos incorrecto <br> el cantida valida es 8</small><br>
+                }
+                }
+
+                <h2 class="font-bold p-2 text-base">Dirección</h2>
+                <textarea formControlName="direccion" rows="5"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                    placeholder="Aviso: No hay costo de envió dentro de la GAM."></textarea>
+                @if(register['direccion'].invalid && register['direccion'].touched){
+
+                @if(register['direccion'].errors!['minlength']){
+                <small class="text-red-600">Dirección demasiado corta</small><br>
+                }
+                @if(register['direccion'].errors!['maxlength']){
+                <small class="text-red-600">Dirreción demasiado larga</small><br>
+                }
+                }
+                <h2 class="font-bold p-2 text-base">Contraseña</h2>
+                <input class="w-full mb-5 border-gray-300 rounded-md" formControlName="clave" type="password"
+                    placeholder="Ejemplo:passwordSeguro23!">
+
+                @if(register['clave'].invalid && register['clave'].touched){
+                @if(register['clave'].errors!['required']){
+                <small class="text-red-600 pb-10">La contraseña es obligatoria.</small><br>
+                }
+                @else {
+                @if(register['clave'].errors!['minlength']){
+                <small class="text-red-600 pb-10">Debe tener al menos 8 caracteres.</small><br>
+                }
+                @if(register['clave'].errors!['missingUpper']){
+                <small class="text-red-600 pb-10">Debe contener al menos una letra mayúscula.</small><br>
+                }
+                @if(register['clave'].errors!['missingLower']){
+                <small class="text-red-600 pb-10">Debe contener al menos una letra minúscula.</small><br>
+                }
+                @if(register['clave'].errors!['missingNumber']){
+                <small class="text-red-600 pb-10">Debe contener al menos un número.</small><br>
+                }
+                @if(register['clave'].errors!['missingSymbol']){
+                <small class="text-red-600 pb-10">Debe contener al menos un símbolo (@ $ ! % * ? &).</small><br>
+                }
+                }
+
+
+                }
+
+                @if(errorLogin()){
+                <small class="text-red-600">Error al registrar el usuario. </small><br>
+                }
+
+                <button
+                    class="w-full bg-black text-white text-sm font-medium px-4 py-2 mt-5 mb-5 rounded-md hover:bg-gray-800 transition-colors"
+                    type="submit" form="miFormRegister">
+                    Registrarse
+                </button>
+                <a href="login">
+                    <p class="underline text-center">
+                        ¿Ya estas registrado? Inicia Sesión
+                    </p>
+                </a>
+            </form>
+        </div>
+    </section>
+</main>
