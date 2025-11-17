@@ -60,13 +60,13 @@ def login(form: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get
     
     autenticar = "SELECT autenticarUsuario(:correo, :clave) as es_valido"
     paramAutenticar = {"correo": form.username, "clave": form.password}
-    
+    print(form.username, form.password)
     idusuario = db.execute(text(autenticar), paramAutenticar).fetchone().es_valido    
     if idusuario == 0:
         raise HTTPException(status_code=401, detail="Credenciales inválidas")
     token_auth, tkRef = generar_Tokens(idusuario, db) 
      
-    return {"access_token": token_auth,"tkRef": tkRef, "token_type": "bearer"}    
+    return {"token": token_auth,"tkRef": tkRef}    
  
 @auth_router.patch("/refreshToken")
 def refresh_token( datos_Ref:UsuarioRefreshToken, db: Session = Depends(get_db)):    
@@ -74,7 +74,7 @@ def refresh_token( datos_Ref:UsuarioRefreshToken, db: Session = Depends(get_db))
     if validacion == 0:
         raise HTTPException(status_code=401, detail="Token de refresco inválido")        
     new_access_token, new_tkRef = generar_Tokens(datos_Ref.id_usuario, db)           
-    return {"access_token": new_access_token,"tkRef": new_tkRef, "token_type": "bearer"}  
+    return {"token": new_access_token,"tkRef": new_tkRef}  
 
 @auth_router.get("/obtenerUsuario")
 def obtener_usuario(token: str, db: Session = Depends(get_db)):
@@ -116,7 +116,7 @@ def register(usuario: UsuarioCreate, db: Session = Depends(get_db)):
             })
         token_auth, tkRef = generar_Tokens(new_id, db)
         db.commit()
-        return {"access_token": token_auth,"tkRef": tkRef, "token_type": "bearer"} 
+        return {"token": token_auth,"tkRef": tkRef} 
     except Exception as e:
         db.rollback()
         print(e)
