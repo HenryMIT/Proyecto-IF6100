@@ -52,7 +52,7 @@ export class SideNav {
     {
       icon: 'account_balance',
       label: 'Inventario',
-      route: 'tecnico',
+      route: 'productos',
       rol : [2]
     },
     {
