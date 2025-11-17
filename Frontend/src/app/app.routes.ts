@@ -7,6 +7,7 @@ import { Servicios } from './components/servicios/servicios';
 import { Contactos } from './components/contactos/contactos';
 import { ProductosComponent } from './components/productos/productos';
 import { Register } from './components/register/register';
+import { AdministradoresComponent } from './components/administradores/administradores';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -18,5 +19,7 @@ export const routes: Routes = [
   { path: 'servicios', component: Servicios },
   { path: 'servicios/:tipo', component: Servicios },
   { path: 'contactos', component: Contactos },
-  { path: 'productos', component: ProductosComponent }
+  { path: 'productos', component: ProductosComponent },
+  { path: 'administradores', component: AdministradoresComponent }, 
+  
 ];

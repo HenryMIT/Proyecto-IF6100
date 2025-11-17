@@ -40,7 +40,7 @@ export class SideNav {
     {
       icon: 'work',
       label: 'Administradores',
-      route: 'admin',
+      route: 'administradores',
       rol: [2]
     },
     {
