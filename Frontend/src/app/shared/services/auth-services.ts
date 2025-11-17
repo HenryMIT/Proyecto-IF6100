@@ -47,7 +47,7 @@ export class AuthServices {
       )
   }
 
-  public register(datos: ClienteRegister) {
+  public register(datos: ClienteRegister): Observable<any> {
     return this.http.post<IToken>(`${_SERVER}/auth/register`, datos).pipe(
       retry(1),
       tap(
@@ -68,7 +68,7 @@ export class AuthServices {
       this.http
         .delete(`${_SERVER}/auth/${this.userActual.idUsuario}`)
         .subscribe(
-          (res)=>{
+          (res) => {
             this.router.navigate(['login']);
           }
         );

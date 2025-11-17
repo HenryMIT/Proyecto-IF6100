@@ -1,0 +1,146 @@
+<mat-card class="!p-0">
+
+    <mat-card-header class="bg-gray-200 h-15 flex justify-center">
+        <mat-card-title class="!font-extrabold text-[1.5rem]">
+            Gestión de Clientes
+        </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content class="p-0! bg-white">
+
+        <!-- Panel de filtros -->
+        <div class="p-4">
+            <mat-expansion-panel (opened)="panelOpenState.set(true)"
+                (closed)="panelOpenState.set(false); limpiarFiltros()">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{panelOpenState() ? 'Cerrar Filtros' : 'Abrir Filtros'}}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <mat-form-field>
+                        <mat-label>Nombre</mat-label>
+                        <input matInput #fnombre (keyup)="onFiltroChange(
+                        {                          
+                        nombre: fnombre.value,
+                        apellido1:fapellido1.value,
+                        apellido2:fapellido2.value
+                        }
+                        )" placeholder="Buscar por nombre">
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Primer Apellido</mat-label>
+                        <input matInput #fapellido1 (keyup)="onFiltroChange(
+                        {                          
+                        nombre: fnombre.value,
+                        apellido1:fapellido1.value,
+                        apellido2:fapellido2.value
+                        } 
+                        )" placeholder="Buscar por primer apellido">
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Segundo Apellido</mat-label>
+                        <input matInput #fapellido2 (keyup)="onFiltroChange(
+                        {                          
+                        nombre: fnombre.value,
+                        apellido1:fapellido1.value,
+                        apellido2:fapellido2.value
+                        }
+                        )" placeholder="Buscar por segundo apellido">
+                    </mat-form-field>
+                </div>
+            </mat-expansion-panel>
+        </div>
+
+        <!-- Tabla de Cliente -->
+        <table mat-table [dataSource]="dataSource()" class="w-full">
+
+            <!-- ID -->
+            <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>ID</th>
+                <td mat-cell *matCellDef="let element">{{element.id}}</td>
+            </ng-container>
+
+            <!-- Nombre -->
+            <ng-container matColumnDef="nombre">
+                <th mat-header-cell *matHeaderCellDef>Nombre</th>
+                <td mat-cell *matCellDef="let element">{{element.nombre}}</td>
+            </ng-container>
+
+            <!-- Primer Apellido -->
+            <ng-container matColumnDef="primer_apellido">
+                <th mat-header-cell *matHeaderCellDef>Primer Apellido</th>
+                <td mat-cell *matCellDef="let element">{{element.primer_apellido}}</td>
+            </ng-container>
+
+            <!-- Segundo Apellido -->
+            <ng-container matColumnDef="segundo_apellido">
+                <th mat-header-cell *matHeaderCellDef>Segundo Apellido</th>
+                <td mat-cell *matCellDef="let element">{{element.segundo_apellido}}</td>
+            </ng-container>
+
+            <!-- Correo -->
+            <ng-container matColumnDef="correo">
+                <th mat-header-cell *matHeaderCellDef>Correo</th>
+                <td mat-cell *matCellDef="let element">{{element.correo}}</td>
+            </ng-container>
+
+            <!-- Teléfono -->
+            <ng-container matColumnDef="telefono">
+                <th mat-header-cell *matHeaderCellDef>Teléfono</th>
+                <td mat-cell *matCellDef="let element">{{element.telefono}}</td>
+            </ng-container>
+
+            <!-- Dirección -->
+            <ng-container matColumnDef="direccion">
+                <th mat-header-cell *matHeaderCellDef>Dirección</th>
+                <td mat-cell *matCellDef="let element" class="whitespace-normal break-words max-w-[300px]">{{element.direccion}}</td>
+            </ng-container>
+
+            <!-- Botonera -->
+            <ng-container matColumnDef="botonera">
+                <th mat-header-cell *matHeaderCellDef style="text-align: center;">
+                    <button (click)="onNuevo();" class="inline-flex items-center gap-2 px-5 py-2.5 text-white bg-blue-900 hover:bg-blue-950
+              focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm
+              focus:outline-none transition-all duration-200 shadow-lg hover:shadow-xl">
+                        <mat-icon class="text-xl!">add</mat-icon>
+                        <span>Agregar</span>
+                    </button>
+                </th>
+
+                <td mat-cell *matCellDef="let element">
+                    <div class="flex space-around">
+                        <button (click)="onInfo(element.id)"
+                            class="flex text-white bg-blue-900 hover:bg-blue-950 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1 mx-2 focus:outline-none">
+                            <mat-icon>info</mat-icon>
+                        </button>
+
+                        <button (click)="onEditar(element.id)"
+                            class="flex focus:outline-none text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:ring-orange-300 font-medium rounded-lg text-sm px-3 py-1 mx-2">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+
+                        <button (click)="onEliminar(element.id)"
+                            class="flex focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1 mx-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </td>
+
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+            <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                     showFirstLastButtons
+                     aria-label="Seleccionar página de Clientes">
+      </mat-paginator>
+
+
+    </mat-card-content>
+</mat-card>

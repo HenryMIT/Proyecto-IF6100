@@ -32,6 +32,24 @@ def filtrar_clientes(
     resultados = [ClienteResponse.from_orm(row) for row in resultados]
     return resultados
 
+@router.get("/{id}", response_model=ClienteResponse)
+def buscar_cliente(id: int, db: Session = Depends(get_db)):
+    try:
+        sql = "CALL buscarCliente(:id)"
+        resultado = db.execute(text(sql), {"id": id}).fetchone()
+        
+        if not resultado:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail=f"Cliente con ID {id} no encontrado"
+            )
+        
+        return ClienteResponse.from_orm(resultado)
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail="Error en la base de datos")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.post("/", response_model=int, status_code=status.HTTP_201_CREATED)
 def crear_cliente(cliente: ClienteCreate, db: Session = Depends(get_db)):   
     try:
