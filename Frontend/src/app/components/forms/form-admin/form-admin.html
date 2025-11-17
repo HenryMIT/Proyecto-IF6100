@@ -1,0 +1,63 @@
+<div class="max-w-lg mx-auto bg-white rounded-2xl shadow-2xl p-8 overflow-y-auto max-h-[90vh] form-dialog">
+  <h2 class="text-2xl font-bold mb-6">{{ data?.title || (esEdicion ? 'Editar Administrador' : 'Nuevo Administrador') }}</h2>
+  <form [formGroup]="adminForm" (ngSubmit)="onSubmit()" autocomplete="off" class="space-y-6">
+    <div class="mb-4">
+      <label class="block mb-1 font-medium text-gray-700">Nombre</label>
+      <input class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Nombre" formControlName="nombre" />
+      @if (isFieldInvalid('nombre')) {
+        <div class="text-red-600 text-xs mt-1">{{ getFieldError('nombre') }}</div>
+      }
+    </div>
+    <div class="mb-4">
+      <label class="block mb-1 font-medium text-gray-700">Primer Apellido</label>
+      <input class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Primer Apellido" formControlName="primer_apellido" />
+      @if (isFieldInvalid('primer_apellido')) {
+        <div class="text-red-600 text-xs mt-1">{{ getFieldError('primer_apellido') }}</div>
+      }
+    </div>
+    <div class="mb-4">
+      <label class="block mb-1 font-medium text-gray-700">Segundo Apellido</label>
+      <input class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Segundo Apellido" formControlName="segundo_apellido" />
+      @if (isFieldInvalid('segundo_apellido')) {
+        <div class="text-red-600 text-xs mt-1">{{ getFieldError('segundo_apellido') }}</div>
+      }
+    </div>
+    <div class="mb-4">
+      <label class="block mb-1 font-medium text-gray-700">Correo</label>
+      <input class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Correo" formControlName="correo" />
+      @if (isFieldInvalid('correo')) {
+        <div class="text-red-600 text-xs mt-1">{{ getFieldError('correo') }}</div>
+      }
+    </div>
+    <div class="mb-4">
+      <label class="block mb-1 font-medium text-gray-700">Teléfono</label>
+      <input class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Teléfono" formControlName="telefono" />
+      @if (isFieldInvalid('telefono')) {
+        <div class="text-red-600 text-xs mt-1">{{ getFieldError('telefono') }}</div>
+      }
+    </div>
+    @if (!esEdicion) {
+    <div class="mb-4">
+      <label class="block mb-1 font-medium text-gray-700">Contraseña</label>
+      <input class="w-full border border-gray-300 rounded-lg px-3 py-2" type="password" placeholder="Contraseña" formControlName="clave" />
+      @if (isFieldInvalid('clave')) {
+        <div class="text-red-600 text-xs mt-1">{{ getFieldError('clave') }}</div>
+      }
+    </div>
+    }
+
+    <div class="flex justify-between items-center mt-8 gap-4">
+      <button type="button" (click)="onCancelar()" class="w-1/2 px-4 py-2 bg-gray-200 rounded-lg font-medium hover:bg-gray-300">Cancelar</button>
+      <button type="submit" [disabled]="enviando" class="w-1/2 px-6 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors">
+        {{ enviando ? 'Guardando...' : (esEdicion ? 'Actualizar' : 'Agregar') }}
+      </button>
+    </div>
+
+    @if (mensajeExito) {
+      <div class="text-green-600 text-sm mt-4">{{ mensajeExito }}</div>
+    }
+    @if (mensajeError) {
+      <div class="text-red-600 text-sm mt-4">{{ mensajeError }}</div>
+    }
+  </form>
+</div>
