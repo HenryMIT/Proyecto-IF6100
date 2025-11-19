@@ -1,0 +1,8 @@
+<!-- Contenedor del componente PayPal -->
+<div class="paypal-checkout">
+  <!-- Mensaje de carga mientras se descarga el SDK -->
+  <div *ngIf="loading" class="loading">Cargando PayPal…</div>
+
+  <!-- Aquí PayPal renderizará el botón con `paypal.Buttons().render(...)` -->
+  <div id="paypal-button-container"></div>
+</div>
