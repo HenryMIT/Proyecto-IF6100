@@ -1,24 +1,28 @@
 <main class="min-h-screen bg-gray-50 flex items-center justify-center">
 
-    <section class="size-140 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+    <section id="login" class="size-140 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+
         <div class="pt-5">
             <h3 class="text-3xl text-center">Inicio de Sesión</h3>
         </div>
 
-        <div class="pr-10 pl-10 justify-center mt-10 ">
+        <div class="pr-10 pl-10 justify-center mt-10">
 
             <form id="miFormulario" [formGroup]="frmLogin" (ngSubmit)="onLogin()">
 
                 <h2 class="font-bold p-2 text-base">Correo Electronico</h2>
-                <input class="w-full mb-5 border-gray-300 rounded-md" formControlName="correo" type="text" placeholder="Ejemplo:email@email.com">
+                <input class="w-full mb-5 border-gray-300 rounded-md" formControlName="correo" type="email"
+                    placeholder="Ejemplo:email@email.com">
 
                 <h2 class="font-bold p-2 text-base">Contraseña</h2>
                 <input class="w-full mb-5 border-gray-300 rounded-md" formControlName="passw" type="password"
                     placeholder="Ejemplo:passwordSeguro23!">
 
-                <a href=""><p class="underline">
-                    ¿Olvido su Contraseña?
-                </p></a>
+                <a href="">
+                    <p class="underline">
+                        ¿Olvido su Contraseña?
+                    </p>
+                </a>
                 @if(errorLogin()){
                 <small class="text-red-600">Usuario o Contraseña no valida</small>
                 }
@@ -28,15 +32,14 @@
                     type="submit" form="miFormulario">
                     Iniciar Sesión
                 </button>
-                
-                <a href="">
+                <a href="register">
                     <p class="underline text-center">
-                    ¿No estas registrado? Registrate
-                    </p>                    
+                        ¿No estas registrado? Registrate
+                    </p>
                 </a>
             </form>
+
         </div>
-
-
     </section>
+
 </main>
