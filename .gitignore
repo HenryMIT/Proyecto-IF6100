@@ -20,6 +20,28 @@ backend/htmlcov/
 backend/.env
 backend/.env.*
 
+# --- BACKEND con mayúsculas (BackEnd) ---
+BackEnd/.venv/
+BackEnd/datos/.venv/
+BackEnd/datos/venv/
+BackEnd/negocio/.venv/
+BackEnd/datos/__pycache__/
+BackEnd/datos/models/__pycache__/
+BackEnd/datos/routes/__pycache__/
+BackEnd/datos/auth/__pycache__/
+BackEnd/datos/services/__pycache__/
+BackEnd/datos/schemas/__pycache__/
+BackEnd/datos/utils/__pycache__/
+BackEnd/negocio/__pycache__/
+BackEnd/.pytest_cache/
+BackEnd/*.pyc
+BackEnd/*.pyo
+BackEnd/.mypy_cache/
+BackEnd/.coverage
+BackEnd/htmlcov/
+BackEnd/.env
+BackEnd/.env.*
+
 # --- FRONTEND (Angular / Node) ---
 frontend/node_modules/
 frontend/dist/
@@ -27,6 +49,14 @@ frontend/.angular/
 frontend/.tmp/
 frontend/npm-debug.log*
 frontend/yarn-error.log*
+
+# --- FRONTEND con mayúsculas (Frontend) ---
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.angular/
+Frontend/.tmp/
+Frontend/npm-debug.log*
+Frontend/yarn-error.log*
 
 # --- SO / Editores ---
 .vscode/
