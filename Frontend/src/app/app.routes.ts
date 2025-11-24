@@ -9,6 +9,7 @@ import { ProductosComponent } from './components/productos/productos';
 import { Register } from './components/register/register';
 import { AdministradoresComponent } from './components/administradores/administradores';
 import { Clientes } from './components/clientes/clientes';
+import { PaypalCheckout } from './components/paypal-checkout/paypal-checkout';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -17,6 +18,7 @@ export const routes: Routes = [
   { path: 'register', component: Register },
   { path: 'about-us', component: AboutUs },
   { path: 'proyectos', component: Proyectos },
+  { path: 'checkout', component: PaypalCheckout },
   { path: 'servicios', component: Servicios },
   { path: 'servicios/:tipo', component: Servicios },
   { path: 'contactos', component: Contactos },
