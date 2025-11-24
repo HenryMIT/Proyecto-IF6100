@@ -1,0 +1,15 @@
+.paypal-checkout {
+  display:block;
+}
+
+.loading{
+  padding:0.5rem 0;
+  color:#374151;
+}
+
+#paypal-button-container {
+  /* espacio para el botón */
+}
+
+/* Puedes personalizar estilos del contenedor del botón PayPal aquí. */
+/* Nota: PayPal inyecta su propio markup dentro de #paypal-button-container. */

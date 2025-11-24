@@ -254,6 +254,13 @@ BEGIN
     WHERE DATE(f.fecha) BETWEEN _fecha_inicio AND _fecha_fin;
 END$$
 
+
+DROP PROCEDURE IF EXISTS listarFacturas$$
+CREATE PROCEDURE listarFacturas ()
+BEGIN
+    SELECT * FROM Facturas ORDER BY id_Factura;
+END$$
+
 DELIMITER ;
 
 -- ========================================
