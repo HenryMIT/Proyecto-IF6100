@@ -34,7 +34,7 @@ export class SideNav {
   menuItem = signal<MenuItem[]>([
     { icon: 'attach_money',
       label: 'Facturación',
-      route: 'home',
+      route: 'facturas',
       rol : [2]
     },
     {

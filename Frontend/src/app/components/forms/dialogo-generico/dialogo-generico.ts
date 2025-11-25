@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject,OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,12 +32,17 @@ export interface DialogData {
         </h2>
       </div>
 
-      <!-- Mensaje -->
-      <div class="mb-6">
-        <p class="text-gray-700 text-base leading-relaxed">
-          {{data.mensaje}}
-        </p>
-      </div>
+        @if (usarTextoTabla()) {
+          <pre class="mb-6 text-gray-700 text-base leading-relaxed font-mono whitespace-pre">
+        {{ data.mensaje }}
+          </pre>
+        } @else {
+          <div class="mb-6">
+            <p class="text-gray-700 text-base leading-relaxed">
+              {{ data.mensaje }}
+            </p>
+          </div>
+        }
 
       <!-- Botones -->
       <div class="flex justify-end space-x-3">
@@ -61,12 +66,25 @@ export interface DialogData {
     </div>
   `
 })
-export class DialogoGenerico {
-  
+export class DialogoGenerico implements OnInit {
+
   constructor(
     public dialogRef: MatDialogRef<DialogoGenerico>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
+  ) { }
+
+   ngOnInit(): void {
+   
+    if (this.usarTextoTabla()) {
+      // Ajustá el ancho a lo que te guste
+      this.dialogRef.updateSize('2250px'); // o '700px', '60vw', etc.
+    }
+  }
+
+  usarTextoTabla(): boolean {
+    const titulo = (this.data.titulo || '').toLowerCase();
+    return titulo.includes('detalle de factura');
+  }
 
   onAceptar(): void {
     this.dialogRef.close(true);
@@ -78,7 +96,7 @@ export class DialogoGenerico {
 
   getTitulo(): string {
     if (this.data.titulo) return this.data.titulo;
-    
+
     switch (this.data.tipo) {
       case 'confirmacion': return 'Confirmar acción';
       case 'informacion': return 'Información';

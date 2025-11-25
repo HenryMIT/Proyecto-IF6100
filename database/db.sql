@@ -65,7 +65,7 @@ CREATE TABLE Facturas (
     comentario TEXT,
     estado ENUM('ENTREGADO', 'NO ENTREGADO') DEFAULT 'NO ENTREGADO',
     total DECIMAL(10,2),
-    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id)
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario)
 );
 CREATE TABLE Factura_Productos (
 	id_factura_producto INT PRIMARY KEY AUTO_INCREMENT,

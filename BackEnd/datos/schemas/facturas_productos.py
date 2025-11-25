@@ -5,21 +5,23 @@ class FacturaProductoBase(BaseModel):
     id_factura: int
     id_producto: int
     cantidad: int
-    subtotal: float
-    
+
 class FacturaProductoCreate(FacturaProductoBase):
     pass    
 
-class FacturaProductoResponse(FacturaProductoBase):
-    id_facturas_productos: int
-    
+class FacturaProductoResponse(BaseModel):
+    id_factura_producto: int
+    id_factura: int
+    id_producto: int
+    cantidad: int
+    subtotal: float
+
     class Config:
         from_attributes = True
-        
+
 class FacturaProductoUpdate(BaseModel):
-    cantidad: Optional[int] = None
-    subtotal: Optional[float] = None
-    
+    cantidad: int
+
 class FacturaProductoDelete(BaseModel):
-    id_facturas_productos: int
+    id_factura_producto: int
     
