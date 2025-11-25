@@ -1,0 +1,42 @@
+/* Estilos específicos para el componente de facturas */
+
+.mat-mdc-table {
+  background: white;
+}
+
+.mat-mdc-header-cell {
+  font-weight: bold;
+  background-color: #f5f5f5;
+}
+
+/* Estilos para truncar texto largo */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Estilos para los estados */
+.text-red-600 {
+  color: #dc2626;
+}
+
+.text-orange-600 {
+  color: #ea580c;
+}
+
+.text-green-600 {
+  color: #16a34a;
+}
+
+.text-gray-600 {
+  color: #4b5563;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}

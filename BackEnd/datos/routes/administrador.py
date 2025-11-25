@@ -48,6 +48,10 @@ def buscar_administrador(id: int, db: Session = Depends(get_db)):
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail="Error en la base de datos")
     except Exception as e:
+        print(f"❌ ERROR CREAR ADMINISTRADOR: {str(e)}")
+        print(f"❌ TIPO: {type(e).__name__}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/", response_model=int, status_code=status.HTTP_201_CREATED)
@@ -92,6 +96,10 @@ def crear_administrador(administrador: AdministradorCreate, db: Session = Depend
         # la transacción ya fue rollbacked por el context manager
         raise HTTPException(status_code=500, detail="Error en la base de datos")
     except Exception as e:
+        print(f"❌ ERROR CREAR ADMINISTRADOR: {str(e)}")
+        print(f"❌ TIPO: {type(e).__name__}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/{id}", response_model=None)

@@ -10,6 +10,7 @@ import { Register } from './components/register/register';
 import { AdministradoresComponent } from './components/administradores/administradores';
 import { Clientes } from './components/clientes/clientes';
 import { PaypalCheckout } from './components/paypal-checkout/paypal-checkout';
+import { Facturas } from './components/facturas/facturas';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -23,6 +24,8 @@ export const routes: Routes = [
   { path: 'servicios/:tipo', component: Servicios },
   { path: 'contactos', component: Contactos },
   { path: 'productos', component: ProductosComponent },
-  { path: 'administradores', component: AdministradoresComponent }, 
-  { path: 'cliente', component: Clientes }
+  { path: 'administradores', component: AdministradoresComponent },
+  { path: 'cliente', component: Clientes },
+  { path: 'facturas', component: Facturas },
+
 ];

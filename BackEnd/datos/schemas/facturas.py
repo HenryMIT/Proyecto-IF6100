@@ -4,11 +4,8 @@ from datetime import datetime
 
 class FacturaBase(BaseModel):
     id_usuario: int
-    fecha: datetime
     comentario: Optional[str] = None
-    estado: Optional[str] = "NO ENTREGADO"
-    total: float
-    
+
 class FacturaCreate(FacturaBase):
     pass
 
