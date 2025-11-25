@@ -10,6 +10,7 @@ import { Register } from './components/register/register';
 import { AdministradoresComponent } from './components/administradores/administradores';
 import { Clientes } from './components/clientes/clientes';
 import { PaypalCheckout } from './components/paypal-checkout/paypal-checkout';
+import { CarritoCompras } from './components/carrito-compras/carrito-compras';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -24,5 +25,6 @@ export const routes: Routes = [
   { path: 'contactos', component: Contactos },
   { path: 'productos', component: ProductosComponent },
   { path: 'administradores', component: AdministradoresComponent }, 
-  { path: 'cliente', component: Clientes }
+  { path: 'cliente', component: Clientes },
+  { path: 'carrito', component: CarritoCompras}
 ];

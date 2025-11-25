@@ -17,6 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-productos',
@@ -205,6 +206,6 @@ export class ProductosComponent implements AfterViewInit {
   getImageUrl(relativePath: string): string {
     if (!relativePath) return '';
     if (relativePath.startsWith('http')) return relativePath;
-    return 'http://localhost:8000' + relativePath;
+    return environment.Servidor + relativePath;
   }
 }

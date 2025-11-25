@@ -1,13 +1,14 @@
 <div class="product-card">
   <div class="image-container">
-    <img [src]="product.image" [alt]="product.name" class="product-image" />
+    <img [src]="product.imagen" class="product-image" />
   </div>
 
   <div class="product-info">
-    <h3 class="product-name">{{ product.name }}</h3>
-    <p class="product-description">{{ product.description }}</p>
-    <p class="product-price">{{ product.price | currency :'USD':'symbol':'1.2-2' }}</p>
+    <p class="product-description">{{ product.descripcion }}</p>
+      <small *ngIf="product.descuento">Descuento de {{product.descuento}}%</small>
+    <p class="product-price">{{ product.precio | currency :'CRC':'symbol':'1.2-2' }}</p>
   </div>
+
 
   <button class="add-to-cart-btn" (click)="addToCart()">
     Agregar al carrito

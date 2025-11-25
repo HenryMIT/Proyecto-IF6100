@@ -1,15 +1,112 @@
 <main class="min-h-screen bg-gray-50">
-    <section class="mx-100 space-y-10">
-        <div>
-            <h1 class="text-4xl ">Titulo en grande</h1>
+
+
+    <div class="w-full max-w-5xl mx-auto mt-6">
+        <div id="hero-carousel" class="relative w-full h-64 md:h-[420px] overflow-hidden rounded-3xl"
+            data-carousel="slide">
+            <!-- Slide 1 -->
+            <div class="hidden duration-700 ease-in-out" data-carousel-item="active">
+                <img src="parrilla.jpg" class="absolute block w-full h-full object-cover" alt="Banner 1" />
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                <img src="mesa_acero_120x160.jpg" class="absolute block w-full h-full object-cover" alt="Banner 2" />
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                <img src="cocina_asiatica.jpg" class="absolute block w-full h-full object-cover" alt="Banner 3" />
+            </div>
+
+            <!-- Indicadores -->
+            <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-4 left-1/2">
+                <button type="button" class="w-2.5 h-2.5 rounded-full bg-white/70" aria-label="Slide 1"
+                    data-carousel-slide-to="0"></button>
+                <button type="button" class="w-2.5 h-2.5 rounded-full bg-white/40" aria-label="Slide 2"
+                    data-carousel-slide-to="1"></button>
+                <button type="button" class="w-2.5 h-2.5 rounded-full bg-white/40" aria-label="Slide 3"
+                    data-carousel-slide-to="2"></button>
+            </div>
+
+            <!-- Botón anterior -->
+            <button type="button"
+                class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+                data-carousel-prev>
+                <span
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-black/40 group-hover:bg-black/70">
+                    <svg aria-hidden="true" class="w-4 h-4 text-white" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </span>
+            </button>
+
+            <!-- Botón siguiente -->
+            <button type="button"
+                class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+                data-carousel-next>
+                <span
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-black/40 group-hover:bg-black/70">
+                    <svg aria-hidden="true" class="w-4 h-4 text-white" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </span>
+            </button>
         </div>
-        <ul>
-            <li>Cocina.........................................................................250</li>
-            <li>Transporte.....................................................................300</li>
-            <li>Hospedaje......................................................................450</li>            
-            <li>Total.........................................................................1000</li>
-        </ul>
-        <app-paypal-checkout></app-paypal-checkout>
+    </div>
+
+    <!-- Barra de busqueda y botones -->
+    <section class="flex items-center justify-center gap-4 mx-120 my-10">
+
+        <!-- Barra de búsqueda -->
+        <div class="flex-1">
+            <label class="relative flex items-center w-full">
+
+                <!-- Input -->
+                <input type="text" placeholder="Buscador" class="block w-full h-13 rounded-full border-0 bg-[#f4f0fb]
+               pl-10 pr-10 text-sm text-gray-900 placeholder-gray-400
+               focus:ring-4 focus:ring-purple-200 focus:outline-none"  
+               (input)="onSearch($event.target.value)" />
+
+                <!-- Icono lupa -->
+                <span class="absolute inset-y-0 right-0 flex items-center pr-4">
+                    <button type="button" class="inline-flex items-center justify-center">
+                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                d="M21 21l-4.35-4.35M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14z">
+                            </path>
+                        </svg>
+                    </button>
+                </span>
+
+            </label>
+        </div>
+        
+        <!-- Botón ver carrito -->
+        <a href="carrito" class="flex items-center gap-2 px-6 py-3 rounded-lg bg-black text-white
+           text-sm font-medium shadow-sm hover:bg-gray-900
+           focus:outline-none focus:ring-4 focus:ring-gray-300">
+            <span>Ver carrito</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                    d="M3 3h2l.4 2M7 13h10l2-7H5.4M7 13L5.4 5M7 13l-1.2 4.5M17 13l1.2 4.5M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm8 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z">
+                </path>
+            </svg>
+        </a>
+
+    </section>
+
+    <section class="mx-100 space-y-10">
+        <h1 class="text-4xl font-black text-center">Productos Destacados</h1>
+        <section class="
+        grid grid-cols-4 gap-4 items-start m-5                
+        ">
+            <app-tarjetas-productos *ngFor="let p of listaProductos$ | async;" [product]="p"></app-tarjetas-productos>
+        </section>
     </section>
 
 </main>

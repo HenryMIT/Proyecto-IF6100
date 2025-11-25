@@ -1,5 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
+import { CartProducto } from '../../shared/models/producto.if';
+import { CartService } from '../../shared/services/cart';
 
 @Component({
   selector: 'app-tarjetas-productos',
@@ -9,14 +11,20 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule] 
 })
 export class TarjetasProductosComponent {
-  @Input() product: any = {
-    image: '',
-    name: 'Fregadero Caliente',
-    description: 'Descripción del segundo producto',
-    price: 10.99
+  @Input() product: CartProducto = {
+    id_Producto: 0,
+    imagen: '',    
+    descripcion: 'Descripción del segundo producto',
+    descuento: 5,
+    precio: 10.99
   };
 
+  private readonly cartService = inject(CartService);
+
   addToCart() {
-    console.log('Producto agregado:', this.product.name);
+    const id_prod = this.product.id_Producto;
+    // agrega el producto al carrito (1 unidad)
+    this.cartService.addProduct(this.product);
+    console.log('Producto agregado al carrito:', id_prod);
   }
 }
