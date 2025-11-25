@@ -14,75 +14,67 @@ DROP FUNCTION IF EXISTS nuevaFactura$$
 CREATE FUNCTION nuevaFactura (
     _id_usuario INT,
     _comentario TEXT
-) RETURNS INT 
+) RETURNS INT
 READS SQL DATA
 DETERMINISTIC
 BEGIN
     DECLARE _cant INT;
     DECLARE _id_factura INT;
-    
-    -- Verificar si existe el usuario
-    SELECT COUNT(id) INTO _cant FROM Usuarios WHERE id = _id_usuario;
-    
+
+    -- Verificar si existe el usuario por id_usuario (5002, 5003, etc.)
+    SELECT COUNT(id_usuario) INTO _cant FROM Usuarios WHERE id_usuario = _id_usuario;
+
     IF _cant > 0 THEN
-        INSERT INTO Facturas(id_usuario, fecha, comentario, estado, total) 
+        -- Guardar directamente el id_usuario (5002) en la factura
+        INSERT INTO Facturas(id_usuario, fecha, comentario, estado, total)
             VALUES (_id_usuario, NOW(), _comentario, 'NO ENTREGADO', 0.00);
         SET _id_factura = LAST_INSERT_ID();
     ELSE
         SET _id_factura = 0; -- Usuario no existe
     END IF;
-    
+
     RETURN _id_factura;
 END$$
 
 -- Procedimiento para buscar factura por ID
-DROP PROCEDURE IF EXISTS buscarFacturaPorId$$
-CREATE PROCEDURE buscarFacturaPorId (_id_factura INT)
-BEGIN
-    SELECT f.*, u.correo AS usuario_correo
-    FROM Facturas f
-    INNER JOIN Usuarios u ON f.id_usuario = u.id
-    WHERE f.id_Factura = _id_factura;
-END$$
-
 -- Procedimiento para buscar facturas por usuario
-DROP PROCEDURE IF EXISTS buscarFacturasPorUsuario$$
-CREATE PROCEDURE buscarFacturasPorUsuario (_id_usuario INT)
-BEGIN
-    SELECT f.*, u.correo AS usuario_correo
-    FROM Facturas f
-    INNER JOIN Usuarios u ON f.id_usuario = u.id
-    WHERE f.id_usuario = _id_usuario
-    ORDER BY f.fecha DESC;
-END$$
-
--- Procedimiento para búsqueda avanzada en comentarios usando cadenaFiltro
+-- Procedimiento para búsqueda avanzada usando cadenaFiltro
+-- Puede buscar por: id_Factura, id_usuario, comentario, estado, usuario_correo (correo)
 DROP PROCEDURE IF EXISTS buscarFacturasAvanzado$$
-CREATE PROCEDURE buscarFacturasAvanzado (_parametros VARCHAR(250), _campos VARCHAR(50))
+CREATE PROCEDURE buscarFacturasAvanzado (_parametros VARCHAR(250), _campos VARCHAR(500))
 BEGIN
+    DECLARE _where_clause VARCHAR(500);
+
+    -- Si el campo es 'estado', usar búsqueda exacta (=) en lugar de LIKE
+    IF _campos = 'estado' THEN
+        SET _where_clause = CONCAT('f.estado = ''', _parametros, '''');
+    ELSE
+        -- Obtener la cláusula WHERE usando cadenaFiltro para otros campos
+        SET _where_clause = cadenaFiltro(_parametros, _campos);
+    END IF;
+
+    -- Construir consulta dinámica
+    -- IMPORTANTE: Para buscar por correo del usuario, usar el campo 'correo' (no usuario_correo)
     SET @sql = CONCAT(
-        'SELECT f.*, u.correo AS usuario_correo ',
+        'SELECT f.id_Factura, f.id_usuario, f.fecha, f.comentario, f.estado, f.total, ',
+        'u.correo AS usuario_correo, ',
+        'COUNT(DISTINCT fp.id_Producto) AS total_productos, ',
+        'COALESCE(SUM(fp.cantidad), 0) AS total_items ',
         'FROM Facturas f ',
-        'INNER JOIN Usuarios u ON f.id_usuario = u.id ',
-        'WHERE ', cadenaFiltro(_parametros, _campos),
-        ' ORDER BY f.fecha DESC'
+        'INNER JOIN Usuarios u ON f.id_usuario = u.id_usuario ',
+        'LEFT JOIN Factura_Productos fp ON f.id_Factura = fp.id_Factura ',
+        'WHERE ', _where_clause, ' ',
+        'GROUP BY f.id_Factura, f.id_usuario, f.fecha, f.comentario, f.estado, f.total, u.correo ',
+        'ORDER BY f.fecha DESC'
     );
-    
+
     PREPARE stmt FROM @sql;
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
 END$$
 
 -- Procedimiento para buscar facturas por estado
-DROP PROCEDURE IF EXISTS buscarFacturasPorEstado$$
-CREATE PROCEDURE buscarFacturasPorEstado (_estado ENUM('ENTREGADO', 'NO ENTREGADO'))
-BEGIN
-    SELECT f.*, u.correo AS usuario_correo
-    FROM Facturas f
-    INNER JOIN Usuarios u ON f.id_usuario = u.id
-    WHERE f.estado = _estado
-    ORDER BY f.fecha DESC;
-END$$
+
 
 -- Procedimiento para buscar facturas por rango de fechas
 DROP PROCEDURE IF EXISTS buscarFacturasPorFecha$$
@@ -90,7 +82,7 @@ CREATE PROCEDURE buscarFacturasPorFecha (_fecha_inicio DATE, _fecha_fin DATE)
 BEGIN
     SELECT f.*, u.correo AS usuario_correo
     FROM Facturas f
-    INNER JOIN Usuarios u ON f.id_usuario = u.id
+    INNER JOIN Usuarios u ON f.id_usuario = u.id_usuario
     WHERE DATE(f.fecha) BETWEEN _fecha_inicio AND _fecha_fin
     ORDER BY f.fecha DESC;
 END$$
@@ -227,13 +219,13 @@ END$$
 DROP PROCEDURE IF EXISTS listarFacturasConResumen$$
 CREATE PROCEDURE listarFacturasConResumen()
 BEGIN
-    SELECT 
+    SELECT
         f.*,
         u.correo AS usuario_correo,
-        COUNT(fp.id_factura_producto) AS total_productos,
+        COUNT(DISTINCT fp.id_Producto) AS total_productos,
         COALESCE(SUM(fp.cantidad), 0) AS total_items
     FROM Facturas f
-    INNER JOIN Usuarios u ON f.id_usuario = u.id
+    INNER JOIN Usuarios u ON f.id_usuario = u.id_usuario
     LEFT JOIN Factura_Productos fp ON f.id_Factura = fp.id_Factura
     GROUP BY f.id_Factura, f.id_usuario, f.fecha, f.comentario, f.estado, f.total, u.correo
     ORDER BY f.fecha DESC;
@@ -255,13 +247,6 @@ BEGIN
 END$$
 
 
-DROP PROCEDURE IF EXISTS listarFacturas$$
-CREATE PROCEDURE listarFacturas ()
-BEGIN
-    SELECT * FROM Facturas ORDER BY id_Factura;
-END$$
-
-DELIMITER ;
 
 -- ========================================
 -- RELLENO DE DATOS INICIALES - FACTURAS

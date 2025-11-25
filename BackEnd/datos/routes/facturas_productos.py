@@ -5,64 +5,63 @@ from databases import get_db
 from schemas.facturas_productos import FacturaProductoCreate, FacturaProductoUpdate
 from typing import List
 
-router = APIRouter(prefix="/facturas_productos", tags=["facturas_productos"])
+router = APIRouter(prefix="/factura_productos", tags=["factura_productos"])
 
-# Crear nuevo registro en facturas_productos (usa nuevaFacturaProducto)
+# Crear nuevo registro en facturas_productos (usa agregarProductoAFactura)
 @router.post("/")
 def create_factura_producto(factura_producto: FacturaProductoCreate, db: Session = Depends(get_db)):
     result = db.execute(
-        text("""SELECT nuevaFacturaProducto(:id_factura, :id_producto, :cantidad, :subtotal) AS id"""),
+        text("""SELECT agregarProductoAFactura(:id_factura, :id_producto, :cantidad) AS id"""),
         factura_producto.dict()
     )
     id = result.fetchone().id
     db.commit()
     if id == 0:
-        raise HTTPException(status_code=400, detail="Error al crear el registro de factura_producto")
-    created = db.execute(text("CALL buscarFacturaProductoPorId(:id)"), {"id": id}).fetchone()
-    if not created:
-        raise HTTPException(status_code=404, detail="Registro no encontrado después de crear")
-    return dict(created._mapping)
+        raise HTTPException(status_code=400, detail="Error al agregar producto - Factura no existe, producto no existe, o stock insuficiente")
+    return {"id": id, "mensaje": "Producto agregado a factura exitosamente"}
 
-# Actualizar registro en facturas_productos (usa actualizarFacturaProducto)
+# Actualizar cantidad de producto en factura (usa actualizarCantidadProductoFactura)
 @router.put("/{id}")
 def actualizar_factura_producto(id: int, data: FacturaProductoUpdate, db: Session = Depends(get_db)):
-    params = {
-        "_id_facturas_productos": id,
-        "_cantidad": data.cantidad,
-        "_subtotal": data.subtotal
-    }
     result = db.execute(
-        text("""SELECT actualizarFacturaProducto(:_id_facturas_productos, :_cantidad, :_subtotal) AS estado"""),
-        params
+        text("""SELECT actualizarCantidadProductoFactura(:id_factura_producto, :nueva_cantidad) AS estado"""),
+        {"id_factura_producto": id, "nueva_cantidad": data.cantidad}
     )
     estado = result.fetchone().estado
     db.commit()
     if estado == 0:
-        raise HTTPException(status_code=404, detail="Registro de factura_producto no encontrado o no actualizado")
-    updated = db.execute(text("CALL buscarFacturaProductoPorId(:id)"), {"id": id}).fetchone()
-    if not updated:
-        raise HTTPException(status_code=404, detail="Registro no encontrado después de actualizar")
-    return dict(updated._mapping)
+        raise HTTPException(status_code=404, detail="Registro de factura_producto no encontrado")
+    elif estado == 2:
+        raise HTTPException(status_code=400, detail="Stock insuficiente para actualizar la cantidad")
+    return {"mensaje": "Cantidad actualizada exitosamente"}
 
-# Eliminar registro en facturas_productos (usa eliminarFacturaProducto)
+# Eliminar producto de factura (usa eliminarProductoDeFactura)
 @router.delete("/{id}")
 def eliminar_factura_producto(id: int, db: Session = Depends(get_db)):
-    existing = db.execute(text("CALL buscarFacturaProductoPorId(:id)"), {"id": id}).fetchone()
-    if not existing:
-        raise HTTPException(status_code=404, detail="Registro de factura_producto no encontrado")
-
     result = db.execute(
-        text("SELECT eliminarFacturaProducto(:id_facturas_productos) AS estado"),
-        {"id_facturas_productos": id}
+        text("SELECT eliminarProductoDeFactura(:id_factura_producto) AS estado"),
+        {"id_factura_producto": id}
     )
     estado = result.fetchone().estado
     db.commit()
     if estado == 0:
         raise HTTPException(status_code=404, detail="Registro de factura_producto no encontrado")
-    return {"id": id, "mensaje": "Registro de factura_producto eliminado exitosamente"}
+    return {"id": id, "mensaje": "Producto eliminado de factura exitosamente (stock devuelto)"}
 
-# Listar todos los registros en facturas_productos (usa listarFacturaProductos)
-@router.get("/")
-def listar_facturas_productos(db: Session = Depends(get_db)):
-    result = db.execute(text("CALL listarFacturaProductos()"))
-    return [dict(r._mapping) for r in result.fetchall()]
+# Ver detalle completo de factura (usa verDetalleFactura)
+@router.get("/factura/{id_factura}")
+def ver_detalle_factura(id_factura: int, db: Session = Depends(get_db)):
+    result = db.execute(text("CALL verDetalleFactura(:id_factura)"), {"id_factura": id_factura})
+    data = result.fetchall()
+    if not data:
+        return []
+    return [dict(r._mapping) for r in data]
+
+# Buscar facturas que contienen un producto específico (usa buscarFacturasPorProducto)
+@router.get("/producto/{id_producto}")
+def buscar_por_producto(id_producto: int, db: Session = Depends(get_db)):
+    result = db.execute(text("CALL buscarFacturasPorProducto(:id_producto)"), {"id_producto": id_producto})
+    data = result.fetchall()
+    if not data:
+        return []
+    return [dict(r._mapping) for r in data]

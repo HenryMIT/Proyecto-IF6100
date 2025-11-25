@@ -10,6 +10,8 @@ DELIMITER $$
 -- ========================================
 
 -- Función para agregar producto a factura
+
+-- Función para agregar producto a factura (CORREGIDA)
 DROP FUNCTION IF EXISTS agregarProductoAFactura$$
 CREATE FUNCTION agregarProductoAFactura (
     _id_factura INT,
@@ -29,11 +31,16 @@ BEGIN
     
     -- Verificar si existe la factura
     SELECT COUNT(id_Factura) INTO _cant_factura FROM Facturas WHERE id_Factura = _id_factura;
-    
-    -- Verificar si existe el producto y obtener datos
-    SELECT COUNT(id_Producto), precio, descuento, cantidad 
-    INTO _cant_producto, _precio, _descuento, _stock
-    FROM Productos WHERE id_Producto = _id_producto;
+
+    -- Verificar si existe el producto
+    SELECT COUNT(id_Producto) INTO _cant_producto FROM Productos WHERE id_Producto = _id_producto;
+
+    -- Si existe el producto, obtener sus datos
+    IF _cant_producto > 0 THEN
+        SELECT precio, descuento, cantidad
+        INTO _precio, _descuento, _stock
+        FROM Productos WHERE id_Producto = _id_producto;
+    END IF;
     
     IF _cant_factura > 0 AND _cant_producto > 0 AND _stock >= _cantidad THEN
         -- Calcular subtotal con descuento
@@ -52,7 +59,7 @@ BEGIN
         
         RETURN _id_detalle;
     ELSE
-        RETURN 0; -- Error: factura no existe, producto no existe, o stock insuficiente
+        RETURN 0;
     END IF;
 END$$
 
@@ -67,11 +74,16 @@ BEGIN
     DECLARE _id_producto INT;
     DECLARE _cantidad_devolver INT;
     
-    -- Obtener datos del detalle
-    SELECT COUNT(id_factura_producto), id_Factura, id_Producto, cantidad
-    INTO _cant, _id_factura, _id_producto, _cantidad_devolver
-    FROM Factura_Productos 
-    WHERE id_factura_producto = _id_factura_producto;
+    -- Verificar si existe el detalle
+    SELECT COUNT(id_factura_producto) INTO _cant FROM Factura_Productos WHERE id_factura_producto = _id_factura_producto;
+
+    -- Si existe, obtener datos del detalle
+    IF _cant > 0 THEN
+        SELECT id_Factura, id_Producto, cantidad
+        INTO _id_factura, _id_producto, _cantidad_devolver
+        FROM Factura_Productos
+        WHERE id_factura_producto = _id_factura_producto;
+    END IF;
     
     IF _cant > 0 THEN
         -- Devolver stock al producto

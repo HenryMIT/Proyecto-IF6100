@@ -1,0 +1,185 @@
+<mat-card class="p-0!">
+  <mat-card-header class="bg-gray-200 h-15 flex justify-center">
+    <mat-card-title class="font-extrabold! text-[1.5rem]">
+      Gestión de Facturas
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content class="p-0! bg-white">
+
+      <!-- Panel de filtros expansible -->
+      <div class="p-4">
+        <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false); limpiarFiltros()">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{panelOpenState() ? 'Cerrar Filtros' : 'Abrir Filtros'}}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <mat-form-field>
+            <mat-label>ID Factura</mat-label>
+            <input matInput #fid_factura id="fid_factura" type="number" (keyup)="onFiltroChange({
+                id_factura: fid_factura.value,
+                correo: fcorreo.value,
+                comentario: fcomentario.value
+            })">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Correo Usuario</mat-label>
+            <input matInput #fcorreo id="fcorreo" (keyup)="onFiltroChange({
+                id_factura: fid_factura.value,
+                correo: fcorreo.value,
+                comentario: fcomentario.value
+            })">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Comentario</mat-label>
+            <input matInput #fcomentario id="fcomentario" (keyup)="onFiltroChange({
+                id_factura: fid_factura.value,
+                correo: fcorreo.value,
+                comentario: fcomentario.value
+            })">
+          </mat-form-field>
+        </div>
+
+        <!-- Botones de filtro por estado -->
+        <div class="flex gap-2 mt-4">
+          <button (click)="cargarFacturas()"
+            class="px-4 py-2 text-white bg-blue-900 hover:bg-blue-950 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm focus:outline-none">
+            Todas las Facturas
+          </button>
+          <button (click)="onFiltrarPorEstado('NO ENTREGADO')"
+            class="px-4 py-2 text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm focus:outline-none">
+            No Entregadas
+          </button>
+          <button (click)="onFiltrarPorEstado('ENTREGADO')"
+            class="px-4 py-2 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm focus:outline-none">
+            Entregadas
+          </button>
+        </div>
+      </mat-expansion-panel>
+      </div>
+
+      <!-- Tabla de facturas -->
+      <table mat-table [dataSource]="dataSource()" class="w-full">
+
+        <!-- ID Factura -->
+        <ng-container matColumnDef="id_Factura">
+          <th mat-header-cell *matHeaderCellDef>ID Factura</th>
+          <td mat-cell *matCellDef="let element">{{element.id_Factura}}</td>
+        </ng-container>
+
+        <!-- ID Usuario -->
+        <ng-container matColumnDef="id_usuario">
+          <th mat-header-cell *matHeaderCellDef>ID Usuario</th>
+          <td mat-cell *matCellDef="let element">{{element.id_usuario}}</td>
+        </ng-container>
+
+        <!-- Correo Usuario -->
+        <ng-container matColumnDef="usuario_correo">
+          <th mat-header-cell *matHeaderCellDef>Usuario</th>
+          <td mat-cell *matCellDef="let element">{{element.usuario_correo}}</td>
+        </ng-container>
+
+        <!-- Fecha -->
+        <ng-container matColumnDef="fecha">
+          <th mat-header-cell *matHeaderCellDef>Fecha</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.fecha | date:'dd/MM/yyyy HH:mm'}}
+          </td>
+        </ng-container>
+
+        <!-- Estado -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let element" [class]="getEstadoClass(element.estado)">
+            <div class="flex items-center gap-2">
+              <mat-icon>{{getEstadoIcon(element.estado)}}</mat-icon>
+              {{element.estado}}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Total Productos -->
+        <ng-container matColumnDef="total_productos">
+          <th mat-header-cell *matHeaderCellDef>Productos</th>
+          <td mat-cell *matCellDef="let element">{{element.total_productos}}</td>
+        </ng-container>
+
+        <!-- Total Items -->
+        <ng-container matColumnDef="total_items">
+          <th mat-header-cell *matHeaderCellDef>Items</th>
+          <td mat-cell *matCellDef="let element">{{element.total_items}}</td>
+        </ng-container>
+
+        <!-- Total -->
+        <ng-container matColumnDef="total">
+          <th mat-header-cell *matHeaderCellDef>Total</th>
+          <td mat-cell *matCellDef="let element" class="font-semibold">
+            {{element.total | currency:'CRC':'symbol-narrow':'1.2-2'}}
+          </td>
+        </ng-container>
+
+        <!-- Comentario -->
+        <ng-container matColumnDef="comentario">
+          <th mat-header-cell *matHeaderCellDef>Comentario</th>
+          <td mat-cell *matCellDef="let element">
+            <span [title]="element.comentario" class="truncate max-w-xs block">
+              {{element.comentario}}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Botonera de acciones -->
+        <ng-container matColumnDef="botonera">
+          <th mat-header-cell *matHeaderCellDef style="text-align: center;">
+            Acciones
+          </th>
+
+          <!-- Botones de acción por fila -->
+          <td mat-cell *matCellDef="let element">
+            <div class="flex justify-center space-x-2">
+
+              <!-- Botón de ver detalle -->
+              <button (click)="onVerDetalle(element.id_Factura)"
+                class="flex focus:outline-none text-white bg-blue-600 hover:bg-blue-700
+                       focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1"
+                title="Ver detalle de factura">
+                <mat-icon>visibility</mat-icon>
+              </button>
+
+              <!-- Botón de cambiar estado -->
+              <button (click)="onCambiarEstado(element.id_Factura, element.estado)"
+                class="flex focus:outline-none text-white bg-orange-500 hover:bg-orange-600
+                       focus:ring-4 focus:ring-orange-300 font-medium rounded-lg text-sm px-3 py-1"
+                title="Cambiar estado de factura">
+                <mat-icon>{{getEstadoIcon(element.estado)}}</mat-icon>
+              </button>
+
+              <!-- Botón de eliminar -->
+              <button (click)="onEliminar(element.id_Factura)"
+                class="flex focus:outline-none text-white bg-red-700 hover:bg-red-800
+                       focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1
+                       dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                title="Eliminar factura">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+      </table>
+
+      <!-- Paginador -->
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                     showFirstLastButtons
+                     aria-label="Seleccionar página de facturas">
+      </mat-paginator>
+
+    </mat-card-content>
+</mat-card>
