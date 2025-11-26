@@ -11,6 +11,7 @@ import {
   ActualizarEstadoResponse,
   EliminarContactoResponse
 } from '../models/contactos.if';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ import {
 export class ContactoService {
   
   private readonly http = inject(HttpClient);
-  private readonly serverUrl = 'http://localhost:8000'; // URL base del backend
+  private readonly serverUrl = environment.Servidor; // URL base del backend
 
   constructor() { }
 

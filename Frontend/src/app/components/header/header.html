@@ -1,4 +1,4 @@
-<header class="h-30 justify-between px-4 text-white" id="frontend-contend">
+<header class="max-w-full h-30 justify-between px-4 text-white" id="frontend-contend">
 
 
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -22,13 +22,53 @@
             <ul
                 class="font-medium text-base flex flex-col p-4 md:p-0 mt-4 border md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
                 <li>
-                    <a href="#"
+                    <a [routerLink]="'/home'"
                         class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
                         aria-current="page">Inicio</a>
                 </li>
-                <li>
-                    <a href="#"
-                        class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Catálogo</a>
+                <li class="relative" data-dropdown-root="categorias">
+                    <!-- Botón de Categorías con dropdown -->
+                    <button data-dropdown="categorias" (click)="toggleCategoriasDropdown($event)"
+                        class="flex items-center py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                        Categorías
+                        <svg class="ml-1 w-4 h-4 transition-transform" [class.rotate-180]="isCategoriasDropdownOpen"
+                            fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+
+                    @if (isCategoriasDropdownOpen) {
+                    <div
+                        class="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                        <div class="py-2">
+                            <button (click)="navegarACatalogoCompleto($event)"
+                                class="w-full text-left block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                                <div class="font-medium">Todo el catálogo</div>
+                                <div class="text-xs text-gray-500 mt-1">Ver todos los productos</div>
+                            </button>
+
+                            <button (click)="navegarACategoria(1, $event)"
+                                class="w-full text-left block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                                <div class="font-medium">Cocción y Parrillas</div>
+                                <div class="text-xs text-gray-500 mt-1">Cocinas, parrillas, planchas...</div>
+                            </button>
+
+                            <button (click)="navegarACategoria(2, $event)"
+                                class="w-full text-left block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                                <div class="font-medium">Refrigeración</div>
+                                <div class="text-xs text-gray-500 mt-1">Cámaras frías, vitrinas, congeladores</div>
+                            </button>
+
+                            <button (click)="navegarACategoria(3, $event)"
+                                class="w-full text-left block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                                <div class="font-medium">Acero Inoxidable</div>
+                                <div class="text-xs text-gray-500 mt-1">Mesas, estantes y fregaderos</div>
+                            </button>
+                        </div>
+                    </div>
+                    }
                 </li>
                 <li class="relative">
                     <!-- Botón de Servicios con dropdown -->
@@ -69,11 +109,11 @@
                     }
                 </li>
                 <li>
-                    <a routerLink="/proyectos"
+                    <a [routerLink]='"/proyectos"'
                         class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Proyectos</a>
                 </li>
                 <li>
-                    <a routerLink="/about-us"
+                    <a [routerLink]="'/about-us'"
                         class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Sobre
                         Nosotros</a>
                 </li>

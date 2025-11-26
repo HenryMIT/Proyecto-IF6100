@@ -40,7 +40,8 @@ export class DialogService {
    */
   informar(mensaje: string, titulo?: string): Observable<boolean> {
     const dialogRef = this.dialog.open(DialogoGenerico, {
-      width: '400px',
+      width: 'auto',
+      maxWidth: '35vw',
       data: {
         tipo: 'informacion',
         titulo: titulo,

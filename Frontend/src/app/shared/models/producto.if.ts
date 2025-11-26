@@ -8,6 +8,14 @@ export interface ProductoIf {
 	imagen_producto?: string;
 }
 
+export interface CartProducto{
+	id_Producto?: number;
+	imagen: string,	
+	descripcion:string,
+	descuento?:number,
+	precio:number
+}
+
 // Respuesta de creación de producto con imagen
 export interface ProductoCreadoResponse {
 	id: number;

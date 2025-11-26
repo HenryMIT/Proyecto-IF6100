@@ -87,6 +87,7 @@ export class Register {
                 textoAceptar: 'Aceptar'
               }
             });
+            
           } else {
             this.dialog.open(DialogoGenerico, {
               data: {

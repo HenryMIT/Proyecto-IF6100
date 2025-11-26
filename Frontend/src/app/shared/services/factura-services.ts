@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Factura, FacturaUpdate } from '../models/Factura';
+import { Factura, FacturaUpdate, FacturaProducto, CreateFactura } from '../models/Factura';
 
 const _SERVER = environment.Servidor+'/facturas';
 
@@ -15,9 +15,15 @@ export class FacturaServices {
   constructor() {}
 
 
-  createFactura(factura: Factura): Observable<number> {    
-    return this.http.post<number>(`${_SERVER}/`, factura);
+  createFactura(factura: CreateFactura): Observable<{"id":number, "message":string}> {    
+    return this.http.post<{"id":number, "message":string}>(`${_SERVER}/`, factura);
   }
+
+  creatFacturaProducto(datos: FacturaProducto): Observable<FacturaProducto> {
+    
+    return this.http.post<FacturaProducto>(`${environment.Servidor}/factura_productos/`, datos);
+  }
+
   obtenerFacturas(): Observable<Factura[]> {
     return this.http.get<Factura[]>(`${_SERVER}/resumen`);
   }

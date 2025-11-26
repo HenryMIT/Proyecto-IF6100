@@ -1,5 +1,9 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AuthServices } from '../../shared/services/auth-services';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogoGenerico } from '../forms/dialogo-generico/dialogo-generico';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-paypal-checkout',
@@ -8,7 +12,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './paypal-checkout.html',
   styleUrls: ['./paypal-checkout.css']
 })
-export class PaypalCheckout implements OnInit, OnDestroy {
+export class PaypalCheckout implements OnInit, OnDestroy, OnChanges {
   /**
    * Monto total (string o número). Si es número, se convertirá a string.
    */
@@ -24,12 +28,51 @@ export class PaypalCheckout implements OnInit, OnDestroy {
   @Output() paymentError = new EventEmitter<any>();
 
   loading = true;
+  showError: string | null = null;
   private scriptEl?: HTMLScriptElement;
   private rendered = false;
 
+  private readonly svrAuth = inject(AuthServices);
+  private readonly dialog = inject(MatDialog);
+  private readonly router = inject(Router);
+
   ngOnInit(): void {
-    // Inicializa el SDK y renderiza el botón al montar el componente
-    this.initPayPal().catch(err => this.paymentError.emit(err));
+
+    if (this.svrAuth.isLoggedIn()) {
+      // No inicializar aquí: esperamos a que llegue un `amount` válido vía inputs (ngOnChanges)    
+      this.loading = true;
+    }
+    else {
+      this.dialog.open(DialogoGenerico, {
+        data: {
+          tipo: 'informacion',
+          mensaje: 'Para completar el pago, debe iniciar sesión en su cuenta.',
+          textoAceptar: 'Aceptar'
+        }
+      });
+      this.loading = false;
+      this.router.navigate(['/login']);
+    }
+
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Iniciar PayPal solo cuando el amount sea válido y aún no se haya renderizado
+    if (changes['amount'] && !this.rendered) {
+      const newVal = changes['amount'].currentValue;
+      const numeric = typeof newVal === 'number' ? newVal : Number(newVal);
+      if (Number.isFinite(numeric) && numeric > 0) {
+        this.loading = true;
+        this.showError = null;
+        this.initPayPal().catch(err => {
+          this.showError = String(err?.message || err);
+          this.paymentError.emit(err);
+        });
+      } else {
+        this.loading = false;
+        this.showError = 'Monto inválido para pago';
+      }
+    }
   }
 
   ngOnDestroy(): void {
@@ -37,7 +80,7 @@ export class PaypalCheckout implements OnInit, OnDestroy {
     try {
       const container = document.getElementById('paypal-button-container');
       if (container) container.innerHTML = '';
-    } catch (_) {}
+    } catch (_) { }
 
     if (this.scriptEl && this.scriptEl.parentNode) {
       // No eliminamos siempre el script para no romper otros componentes que dependan de él,
@@ -48,12 +91,18 @@ export class PaypalCheckout implements OnInit, OnDestroy {
 
   private async initPayPal() {
     const client = this.clientId || (window as any).__env?.paypalClientId || 'sb';
+    console.debug('PaypalCheckout: initPayPal, clientId=', client, 'currency=', this.currency, 'locale=', this.locale, 'amount=', this.amount);
     // Cargamos el SDK especificando clientId, moneda y locale
-    await this.loadPaypalSdk(client, this.currency, this.locale);
+    await this.loadPaypalSdk(client, this.currency, this.locale).catch(err => {
+      console.error('Error cargando SDK PayPal', err);
+      this.showError = 'No se pudo cargar PayPal SDK';
+      throw err;
+    });
 
     const paypal = (window as any).paypal;
     if (!paypal || !paypal.Buttons) {
       this.loading = false;
+      this.showError = 'PayPal SDK no disponible';
       throw new Error('PayPal SDK no disponible');
     }
 
@@ -71,7 +120,8 @@ export class PaypalCheckout implements OnInit, OnDestroy {
         label: 'checkout'
       },
       createOrder: (data: any, actions: any) => {
-        const value = typeof this.amount === 'number' ? this.amount.toFixed(2) : this.amount;
+        const numeric = typeof this.amount === 'number' ? this.amount : Number(this.amount);
+        const value = Number.isFinite(numeric) ? numeric.toFixed(2) : '0.00';
         return actions.order.create({
           purchase_units: [{
             amount: { value: value.toString(), currency_code: this.currency }
@@ -93,7 +143,9 @@ export class PaypalCheckout implements OnInit, OnDestroy {
       this.rendered = true;
       this.loading = false;
     }).catch((err: any) => {
+      console.error('Error renderizando botón PayPal', err);
       this.loading = false;
+      this.showError = 'Error renderizando botón PayPal';
       this.paymentError.emit(err);
     });
   }
@@ -117,14 +169,14 @@ export class PaypalCheckout implements OnInit, OnDestroy {
 
       // Si existe algún script con data-paypal-sdk pero diferente locale, lo removemos para recargar con el locale correcto
       const different = existingScripts.find(s => s.getAttribute('data-client-id') === clientId && s.getAttribute('data-locale') !== locale) ||
-                        existingScripts.find(s => s.getAttribute('data-client-id') !== clientId);
+        existingScripts.find(s => s.getAttribute('data-client-id') !== clientId);
 
       if (different) {
         try {
           different.remove();
-        } catch (_) {}
+        } catch (_) { }
         // borrar la referencia global para forzar inicialización limpia
-        try { delete (window as any).paypal; } catch(_) { (window as any).paypal = undefined; }
+        try { delete (window as any).paypal; } catch (_) { (window as any).paypal = undefined; }
       }
 
       // Si ya hay un script con los mismos atributos pero window.paypal aún no está, esperar a que cargue
@@ -148,7 +200,10 @@ export class PaypalCheckout implements OnInit, OnDestroy {
       script.setAttribute('data-locale', locale);
       script.async = true;
       script.onload = () => resolve();
-      script.onerror = (ev) => reject(new Error('No se pudo cargar PayPal SDK'));
+      script.onerror = (ev) => {
+        console.error('Script PayPal onerror', ev);
+        reject(new Error('No se pudo cargar PayPal SDK'));
+      };
       document.head.appendChild(script);
       this.scriptEl = script;
     });
