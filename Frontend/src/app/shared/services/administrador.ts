@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdministradorService {
   private readonly http = inject(HttpClient);
-  private readonly serverUrl = 'http://localhost:8000/administradores';
+  private readonly serverUrl = environment.Servidor+'/administradores';
 
   constructor() { }
 

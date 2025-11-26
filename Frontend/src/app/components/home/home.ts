@@ -1,11 +1,9 @@
-import { AfterViewInit, Component, inject, OnInit, signal } from '@angular/core';
-import { PaypalCheckout } from '../paypal-checkout/paypal-checkout';
+import {Component, inject, OnInit} from '@angular/core';
 import { TarjetasProductosComponent } from '../tarjetas-productos/tarjetas-productos';
 import { CommonModule } from '@angular/common';
 import { combineLatest, BehaviorSubject, map, Observable, startWith } from 'rxjs';
 import { Productos } from '../../shared/services/productos';
 import { CartProducto } from '../../shared/models/producto.if';
-import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-home',
@@ -19,7 +17,7 @@ export class Home implements OnInit {
 
   private readonly svrProducto = inject(Productos);   
   private search$ = new BehaviorSubject<string>('');
-  listaProductos$!: Observable<CartProducto[]>;
+  listaProductos$!: Observable<CartProducto[]>;  
 
   constructor() {
     

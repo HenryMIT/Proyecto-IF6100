@@ -14,7 +14,6 @@ export class CartService {
     private readonly STORAGE_KEY = 'app_cart_v1';
     private _cart = new BehaviorSubject<CartItem[]>(this.loadFromStorage());
     public cart$ = this._cart.asObservable();
-
     public total$ = this.cart$.pipe(
         map(items => items.reduce((acc, it) => acc + (it.precio || 0) * (it.cantidad || 0), 0))        
     );

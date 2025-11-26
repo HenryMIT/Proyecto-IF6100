@@ -18,49 +18,87 @@ export class Header {
 
   constructor(private router: Router) {}
 
-  // Estado del dropdown de servicios
+  // ===== ESTADOS DE DROPDOWN =====
   isServiciosDropdownOpen = false;
+  isCategoriasDropdownOpen = false;
 
-
-  // Toggle para abrir/cerrar el dropdown
+  // ====== SERVICIOS ======
   toggleServiciosDropdown(event?: Event) {
     if (event) {
       event.stopPropagation();
     }
     this.isServiciosDropdownOpen = !this.isServiciosDropdownOpen;
+
+    // opcional: cerrar categorías si abro servicios
+    if (this.isServiciosDropdownOpen) {
+      this.isCategoriasDropdownOpen = false;
+    }
   }
 
-  // Cerrar dropdown al hacer click fuera
   closeServiciosDropdown() {
     this.isServiciosDropdownOpen = false;
   }
 
-  // Navegar al formulario de servicios con tipo preseleccionado
   navegarAServicios(tipo: TipoConsulta, event: Event) {
     event.preventDefault();
     this.closeServiciosDropdown();
     this.router.navigate(['/servicios', tipo]);
   }
 
-  // Event listener para cerrar dropdown al hacer click fuera
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: Event) {
-    const target = event.target as HTMLElement;
-    const dropdown = target.closest('.relative');
-    if (!dropdown || !dropdown.querySelector('[data-dropdown="servicios"]')) {
-      this.closeServiciosDropdown();
+  // ====== CATEGORÍAS ======
+  toggleCategoriasDropdown(event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.isCategoriasDropdownOpen = !this.isCategoriasDropdownOpen;
+
+    // opcional: cerrar servicios si abro categorías
+    if (this.isCategoriasDropdownOpen) {
+      this.isServiciosDropdownOpen = false;
     }
   }
 
-  signin(){
-    this.router.navigate(['/login'])
+  closeCategoriasDropdown() {
+    this.isCategoriasDropdownOpen = false;
   }
 
-  cambiarContrasena(){
-
+  navegarACatalogoCompleto(event: Event) {
+    event.preventDefault();
+    this.closeCategoriasDropdown();
+    this.router.navigate(['/categorias']);  // ruta general
   }
 
-  cerrarSesion(){
+  navegarACategoria(idCategoria: number, event: Event) {
+    event.preventDefault();
+    this.closeCategoriasDropdown();
+    
+    this.router.navigate(['/categorias', idCategoria]); // o la que definiste
+  }
+
+  // ====== CERRAR MENÚS AL HACER CLICK FUERA ======
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    const target = event.target as HTMLElement;
+
+    const dentroServicios = target.closest('[data-dropdown-root="servicios"]');
+    const dentroCategorias = target.closest('[data-dropdown-root="categorias"]');
+
+    if (!dentroServicios) {
+      this.closeServiciosDropdown();
+    }
+    if (!dentroCategorias) {
+      this.closeCategoriasDropdown();
+    }
+  }
+
+  // ====== LOGIN / USER ======
+  signin() {
+    this.router.navigate(['/login']);
+  }
+
+  cambiarContrasena() {}
+
+  cerrarSesion() {
     this.srvAuth.loggOut();
   }
 }

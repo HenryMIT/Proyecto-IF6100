@@ -1,0 +1,54 @@
+<main class="min-h-screen bg-gray-50">
+    <!-- Barra de búsqueda y botón carrito (igual que Home) -->
+    <section class="flex items-center justify-center gap-4 mx-120 my-10">
+
+        <!-- Barra de búsqueda -->
+        <div class="flex-1">
+            <label class="relative flex items-center w-full">
+                <input type="text" placeholder="Buscador" class="block w-full h-13 rounded-full border-0 bg-[#f4f0fb]
+                 pl-10 pr-10 text-sm text-gray-900 placeholder-gray-400
+                 focus:ring-4 focus:ring-purple-200 focus:outline-none" (input)="onSearch($event.target.value)" />
+
+                <!-- Icono lupa -->
+                <span class="absolute inset-y-0 right-0 flex items-center pr-4">
+                    <button type="button" class="inline-flex items-center justify-center">
+                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                d="M21 21l-4.35-4.35M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14z">
+                            </path>
+                        </svg>
+                    </button>
+                </span>
+            </label>
+        </div>
+
+        <!-- Botón ver carrito -->
+        <a href="carrito" class="flex items-center gap-2 px-6 py-3 rounded-lg bg-black text-white
+              text-sm font-medium shadow-sm hover:bg-gray-900
+              focus:outline-none focus:ring-4 focus:ring-gray-300">
+            <span>Ver carrito</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                    d="M3 3h2l.4 2M7 13h10l2-7H5.4M7 13L5.4 5M7 13l-1.2 4.5M17 13l1.2 4.5M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm8 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z">
+                </path>
+            </svg>
+        </a>
+
+    </section>
+
+    <!-- Grid de productos por categoría -->
+    <section class="mx-100 space-y-10">
+        <h1 class="text-4xl font-black text-center">
+            Productos por categoría
+            <span *ngIf="categoriaId">#{{ categoriaId }}</span>
+        </h1>
+
+        <section id="grid-categoria" class="grid grid-cols-4 gap-4 items-start m-5">
+            <app-tarjetas-productos *ngFor="let p of listaProductos$ | async" [product]="p">
+            </app-tarjetas-productos>
+        </section>
+    </section>
+
+</main>

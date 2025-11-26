@@ -10,9 +10,12 @@ import { Register } from './components/register/register';
 import { AdministradoresComponent } from './components/administradores/administradores';
 import { Clientes } from './components/clientes/clientes';
 import { PaypalCheckout } from './components/paypal-checkout/paypal-checkout';
-
 import { CarritoCompras } from './components/carrito-compras/carrito-compras';
 import { Facturas } from './components/facturas/facturas';
+import { Categorias } from './components/categorias/categorias/categorias';
+import { AuthServices } from './shared/services/auth-services';
+import { inject } from '@angular/core';
+import { Usuario } from './shared/models/usuarios';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -32,4 +35,6 @@ export const routes: Routes = [
   { path: 'administradores', component: AdministradoresComponent },
   { path: 'cliente', component: Clientes },
   { path: 'facturas', component: Facturas },
+  { path: 'categorias', component: Categorias},
+  { path: 'categorias/:id', component: Categorias },
 ];
