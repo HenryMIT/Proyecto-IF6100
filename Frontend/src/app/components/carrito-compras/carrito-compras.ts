@@ -223,71 +223,105 @@ export class CarritoCompras implements OnDestroy {
   notificarCorreo(id: number, correo_usr: string) {
     this.facturaService.obtenerDetalleFactura(id).subscribe({
       next: (detalle: any[]) => {
-        let mensaje = `DETALLE DE FACTURA #${id}\n\n`;
-        const header =
-          'PRODUCTO'.padEnd(28) +
-          'CANT'.padStart(6) +
-          'PRECIO'.padStart(14) +
-          'DESC'.padStart(8) +
-          'SUBTOTAL'.padStart(14);
-
-        const separador = '─'.repeat(header.length);
-
-        mensaje += header + '\n';
-        mensaje += separador + '\n';
-
         let totalGeneral = 0;
+        let filasHtml = '';
 
         detalle.forEach((item: any) => {
-          // Cortamos la descripción si es muy larga para que no rompa la tabla
-          const desc = (item.producto_descripcion ?? '')
-            .toString()
-            .slice(0, 27)
-            .padEnd(28);
+          const desc = (item.producto_descripcion ?? '').toString().slice(0, 60);
 
-          const cant = String(item.cantidad).padStart(6);
-
-          const precio = (
-            '₡' +
-            Number(item.producto_precio).toLocaleString('es-CR', {
-              minimumFractionDigits: 2,
-            })
-          ).padStart(14);
-
-          const descuento = (item.producto_descuento + '%').padStart(8);
+          const precioNum = Number(item.producto_precio) || 0;
+          const descNum = Number(item.producto_descuento) || 0;
 
           const subtotalNum =
             item.subtotal ??
-            item.cantidad *
-            item.producto_precio *
-            (1 - (item.producto_descuento || 0) / 100);
-
-          const subtotal = (
-            '₡' +
-            Number(subtotalNum).toLocaleString('es-CR', {
-              minimumFractionDigits: 2,
-            })
-          ).padStart(14);
+            item.cantidad * precioNum * (1 - (descNum || 0) / 100);
 
           totalGeneral += subtotalNum;
 
-          mensaje += desc + cant + precio + descuento + subtotal + '\n';
+          const precio = '₡' + precioNum.toLocaleString('es-CR', {
+            minimumFractionDigits: 2,
+          });
+
+          const subtotal = '₡' + Number(subtotalNum).toLocaleString('es-CR', {
+            minimumFractionDigits: 2,
+          });
+
+          filasHtml += `
+    <tr>
+      <td style="padding:8px; border-bottom:1px solid #eee;">${desc}</td>
+      <td style="padding:8px; border-bottom:1px solid #eee; text-align:center;">
+        ${item.cantidad}
+      </td>
+      <td style="padding:8px; border-bottom:1px solid #eee; text-align:right;">
+        ${precio}
+      </td>
+      <td style="padding:8px; border-bottom:1px solid #eee; text-align:center;">
+        ${descNum}%
+      </td>
+      <td style="padding:8px; border-bottom:1px solid #eee; text-align:right;">
+        ${subtotal}
+      </td>
+    </tr>
+  `;
         });
 
-        mensaje += separador + '\n';
-        mensaje +=
-          'TOTAL'.padEnd(48) +
-          (
-            '₡' +
-            totalGeneral.toLocaleString('es-CR', { minimumFractionDigits: 2 })
-          ).padStart(22);
+        const totalFormato =
+          '₡' + totalGeneral.toLocaleString('es-CR', { minimumFractionDigits: 2 });
 
+        const mensajeHtml = `
+  <div style="max-width:600px; margin:0 auto; font-family:Arial, sans-serif; font-size:14px; color:#333;">
+    <h2 style="text-align:center; margin-bottom:16px;">
+      DETALLE DE FACTURA #${id}
+    </h2>
+
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="background-color:#f5f5f5;">
+          <th style="padding:8px; text-align:left; border-bottom:2px solid #ddd;">Producto</th>
+          <th style="padding:8px; text-align:center; border-bottom:2px solid #ddd;">Cant</th>
+          <th style="padding:8px; text-align:right; border-bottom:2px solid #ddd;">Precio</th>
+          <th style="padding:8px; text-align:center; border-bottom:2px solid #ddd;">Desc</th>
+          <th style="padding:8px; text-align:right; border-bottom:2px solid #ddd;">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filasHtml || `
+          <tr>
+            <td colspan="5" style="padding:12px; text-align:center; color:#777;">
+              Esta factura no tiene productos.
+            </td>
+          </tr>
+        `}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4" style="padding:10px; text-align:right; font-weight:bold; border-top:2px solid #ddd;">
+            TOTAL
+          </td>
+          <td style="padding:10px; text-align:right; font-weight:bold; border-top:2px solid #ddd;">
+            ${totalFormato}
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <p style="margin-top:16px; font-size:12px; color:#777; text-align:center;">
+      Gracias por su compra en <strong>Equipos Rummi</strong>.
+    </p>
+  </div>
+`;
         const correo: Correo_Electronico = {
           destinatario: correo_usr,
-          asunto: "Factura - Equipos Rummi",
-          cuerpo: mensaje
-        }
-        this.emailService.enviarCorreo(correo)
+          asunto: 'Factura - Equipos Rummi',
+          cuerpo: mensajeHtml   // ahora va HTML
+        };
+        const noti = this.emailService.enviarCorreo(correo).subscribe({
+          next: () => { console.log("Se realizo con exito") },
+          error: (error) => {
+            console.error(error);
+          }
+        });
+
       }
     });
 
