@@ -14,13 +14,12 @@ import { CartProducto } from '../../shared/models/producto.if';
 })
 export class Home implements OnInit {
 
-
+  
   private readonly svrProducto = inject(Productos);   
   private search$ = new BehaviorSubject<string>('');
   listaProductos$!: Observable<CartProducto[]>;  
 
-  constructor() {
-    
+  constructor() {    
   }
   ngOnInit(): void {
      const productos$ = this.svrProducto.getProductos().pipe(

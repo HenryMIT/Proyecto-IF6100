@@ -45,7 +45,12 @@
             <span *ngIf="categoriaId">#{{ categoriaId }}</span>
         </h1>
 
-        <section id="grid-categoria" class="grid grid-cols-4 gap-4 items-start m-5">
+        <section id="grid-categoria" class="max-w-6xl mx-auto
+             grid grid-cols-1
+             sm:grid-cols-2
+             lg:grid-cols-3
+             xl:grid-cols-4
+             gap-5 sm:gap-6 lg:gap-7">
             <app-tarjetas-productos *ngFor="let p of listaProductos$ | async" [product]="p">
             </app-tarjetas-productos>
         </section>

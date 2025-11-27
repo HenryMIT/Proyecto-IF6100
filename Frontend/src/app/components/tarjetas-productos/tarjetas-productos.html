@@ -5,10 +5,11 @@
 
   <div class="product-info">
     <p class="product-description">{{ product.descripcion }}</p>
-      <small *ngIf="product.descuento">Descuento de {{product.descuento}}%</small>
-    <p class="product-price">{{ product.precio | currency :'CRC':'symbol':'1.2-2' }}</p>
+    <small *ngIf="product.descuento">Descuento de {{product.descuento}}%</small>
+    <p class="product-price">
+      {{ product.precio | currency :'CRC':'symbol':'1.2-2' }}
+    </p>
   </div>
-
 
   <button class="add-to-cart-btn" (click)="addToCart()">
     Agregar al carrito

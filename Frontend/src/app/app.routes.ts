@@ -13,28 +13,42 @@ import { PaypalCheckout } from './components/paypal-checkout/paypal-checkout';
 import { CarritoCompras } from './components/carrito-compras/carrito-compras';
 import { Facturas } from './components/facturas/facturas';
 import { Categorias } from './components/categorias/categorias/categorias';
-import { AuthServices } from './shared/services/auth-services';
-import { inject } from '@angular/core';
-import { Usuario } from './shared/models/usuarios';
+import { Role } from './shared/models/role';
+import { authGuard } from './shared/helpers/guards/auth-guard';
+import { loginGuard } from './shared/helpers/guards/login-guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'home', component: Home },
-  { path: 'login', component: Login },
+  { path: 'home', component: Home, 
+    canActivate: [authGuard],
+        data: { roles: [Role.Administrador] }
+  },
+  { path: 'login', component: Login, 
+    canActivate: [loginGuard] },
   { path: 'register', component: Register },
   { path: 'about-us', component: AboutUs },
   { path: 'proyectos', component: Proyectos },
   { path: 'checkout', component: PaypalCheckout },
   { path: 'servicios', component: Servicios },
-  { path: 'servicios/:tipo', component: Servicios },
-  { path: 'contactos', component: Contactos },
-  { path: 'productos', component: ProductosComponent },
-  { path: 'administradores', component: AdministradoresComponent }, 
-  { path: 'cliente', component: Clientes },
-  { path: 'carrito', component: CarritoCompras},
-  { path: 'administradores', component: AdministradoresComponent },
-  { path: 'cliente', component: Clientes },
-  { path: 'facturas', component: Facturas },
+  { path: 'servicios/:tipo', component: Servicios },  
+  { path: 'carrito', component: CarritoCompras},      
   { path: 'categorias', component: Categorias},
   { path: 'categorias/:id', component: Categorias },
+  // Panel de administracion 
+  { path: 'contactos', component: Contactos,
+    canActivate: [ authGuard],
+        data: { roles: [Role.visitante, Role.Cliente] }
+   },
+  { path: 'productos', component: ProductosComponent,
+    canActivate: [ authGuard],
+        data: { roles: [Role.visitante, Role.Cliente] } },
+  { path: 'administradores', component: AdministradoresComponent,
+    canActivate: [ authGuard],
+        data: { roles: [Role.visitante, Role.Cliente] } }, 
+  { path: 'cliente', component: Clientes,
+    canActivate: [ authGuard],
+        data: { roles: [Role.visitante, Role.Cliente] } },
+  { path: 'facturas', component: Facturas,
+    canActivate: [ authGuard],
+        data: { roles: [Role.visitante, Role.Cliente] } }
 ];
