@@ -15,6 +15,8 @@ import { Router } from '@angular/router';
 import { DialogService } from '../forms/dialogo-generico/dialog.service';
 import { Productos } from '../../shared/services/productos';
 import { take } from 'rxjs/operators';
+import { EmailServices } from '../../shared/services/email-services';
+import { Correo_Electronico } from '../../shared/models/email_class';
 
 @Component({
   selector: 'app-carrito-compras',
@@ -26,6 +28,7 @@ import { take } from 'rxjs/operators';
 export class CarritoCompras implements OnDestroy {
   private readonly cartService = inject(CartService);
   private readonly facturaService = inject(FacturaServices);
+  private readonly emailService = inject(EmailServices)
   private readonly token = inject(Token);
   private readonly exchange = inject(ExchangeRateService);
   private readonly printService = inject(PrintService);
@@ -170,6 +173,7 @@ export class CarritoCompras implements OnDestroy {
       console.log(decoded.nombre);
 
       this.imprimirFacturaPDF(id, decoded);
+      this.notificarCorreo(id, decoded.correo);
       this.dialogoPago(id);
       this.dialogService.confirmar('Su pago fue realizado con exito.', '¡Pago Exitoso!');
     } catch (err) {
@@ -216,10 +220,83 @@ export class CarritoCompras implements OnDestroy {
     });
   }
 
+  notificarCorreo(id: number, correo_usr: string) {
+    this.facturaService.obtenerDetalleFactura(id).subscribe({
+      next: (detalle: any[]) => {
+        let mensaje = `DETALLE DE FACTURA #${id}\n\n`;
+        const header =
+          'PRODUCTO'.padEnd(28) +
+          'CANT'.padStart(6) +
+          'PRECIO'.padStart(14) +
+          'DESC'.padStart(8) +
+          'SUBTOTAL'.padStart(14);
+
+        const separador = '─'.repeat(header.length);
+
+        mensaje += header + '\n';
+        mensaje += separador + '\n';
+
+        let totalGeneral = 0;
+
+        detalle.forEach((item: any) => {
+          // Cortamos la descripción si es muy larga para que no rompa la tabla
+          const desc = (item.producto_descripcion ?? '')
+            .toString()
+            .slice(0, 27)
+            .padEnd(28);
+
+          const cant = String(item.cantidad).padStart(6);
+
+          const precio = (
+            '₡' +
+            Number(item.producto_precio).toLocaleString('es-CR', {
+              minimumFractionDigits: 2,
+            })
+          ).padStart(14);
+
+          const descuento = (item.producto_descuento + '%').padStart(8);
+
+          const subtotalNum =
+            item.subtotal ??
+            item.cantidad *
+            item.producto_precio *
+            (1 - (item.producto_descuento || 0) / 100);
+
+          const subtotal = (
+            '₡' +
+            Number(subtotalNum).toLocaleString('es-CR', {
+              minimumFractionDigits: 2,
+            })
+          ).padStart(14);
+
+          totalGeneral += subtotalNum;
+
+          mensaje += desc + cant + precio + descuento + subtotal + '\n';
+        });
+
+        mensaje += separador + '\n';
+        mensaje +=
+          'TOTAL'.padEnd(48) +
+          (
+            '₡' +
+            totalGeneral.toLocaleString('es-CR', { minimumFractionDigits: 2 })
+          ).padStart(22);
+
+        const correo: Correo_Electronico = {
+          destinatario: correo_usr,
+          asunto: "Factura - Equipos Rummi",
+          cuerpo: mensaje
+        }
+        this.emailService.enviarCorreo(correo)
+      }
+    });
+
+  }
+
   dialogoPago(id: number) {
     this.facturaService.obtenerDetalleFactura(id).subscribe({
       next: (detalle: any[]) => {
-        console.log('Detalle de factura:', detalle);
+
 
         let mensaje = `DETALLE DE FACTURA #${id}\n\n`;
 
@@ -287,7 +364,7 @@ export class CarritoCompras implements OnDestroy {
         }
         this.dialogService.informar(mensaje, 'Detalle de Factura').subscribe();
 
-        // Si todo salió bien:          
+
         this.cartService.clear();
         this.paymentProcessing.set(false);
       },

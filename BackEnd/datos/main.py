@@ -9,6 +9,7 @@ from auth.authService import auth_router
 from routes.productos import router as producto_router
 from routes.facturas import router as routerfacturas
 from routes.facturas_productos import router as routerfacturas_productos
+from routes.correos import router_correo as router_correo
 
 app = FastAPI(
     title="API Equipo Rummi - Electrodomésticos",
@@ -24,7 +25,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
     allow_credentials=True,
-    allow_methods=["GET, POST, PUT, DELETE, PATCH"], 
+    allow_methods=["*"], 
     allow_headers=["*"],
 )
 
@@ -34,10 +35,11 @@ def root():
     return {"mensaje": "API Equipo Rummi funcionando correctamente"}
 
 # Incluir routers
-app.include_router(contactos_router)
-app.include_router(routercliente)
-app.include_router(administrador_router)
 app.include_router(auth_router)
-app.include_router(producto_router)
 app.include_router(routerfacturas)
 app.include_router(routerfacturas_productos)
+app.include_router(routercliente)
+app.include_router(administrador_router)
+app.include_router(contactos_router)
+app.include_router(producto_router)
+app.include_router(router_correo)

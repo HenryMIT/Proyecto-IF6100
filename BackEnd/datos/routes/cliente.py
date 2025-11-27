@@ -33,7 +33,7 @@ def filtrar_clientes(
     return resultados
 
 @router.get("/{id}", response_model=ClienteResponse)
-def buscar_cliente(id:t, db: Session = Depends(get_db)):
+def buscar_cliente(id:int, db: Session = Depends(get_db)):
     try:
         sql = "CALL buscarCliente(:id)"
         resultado = db.execute(text(sql), {"id": id}).fetchone()
