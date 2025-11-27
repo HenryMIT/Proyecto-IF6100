@@ -43,12 +43,12 @@ export class PrintService {
     // ===== ENCABEZADO (Nombre negocio + título factura) =====
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(18);
-    doc.text('Mi Tienda Online', marginLeft, 40); // cambia nombre
+    doc.text('Equipos Rummi', marginLeft, 40); // cambia nombre
 
     doc.setFontSize(12);
     doc.setFont('helvetica', 'normal');
-    doc.text('Dirección de la tienda', marginLeft, 56);
-    doc.text('Tel: 0000-0000  •  correo@mitienda.com', marginLeft, 70);
+    doc.text('300mts Norte de la iglesia católica de barva a 450 oeste, Heredia, Costa Rica', marginLeft, 56);
+    doc.text('Tel: 8591-0225  •  Rumi@erc.com', marginLeft, 70);
 
     // Datos de factura, lado derecho
     doc.setFont('helvetica', 'bold');
@@ -132,7 +132,7 @@ export class PrintService {
     doc.text('Total a pagar:', boxX, boxY);
     doc.text(`₡ ${data.total.toFixed(2)}`, pageWidth - marginRight, boxY, { align: 'right' });
 
-    // ===== NOTA FINAL =====
+    
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.text('Gracias por su compra.', marginLeft, boxY + 30);
@@ -142,8 +142,7 @@ export class PrintService {
       const nombre = `Factura_${data.numero}_${hoy.getTime()}.pdf`;
       doc.save(nombre);
     } else {
-      // Por si quieres abrir en una pestaña nueva sin guardar directo:
-      // window.open(doc.output('bloburl'));
+      
     }
   }
 }
