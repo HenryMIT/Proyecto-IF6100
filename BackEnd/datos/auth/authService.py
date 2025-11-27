@@ -1,6 +1,6 @@
 import random
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from databases import get_db
@@ -12,6 +12,50 @@ from sqlalchemy import text
 from config import settings
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
+
+
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
+def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+):    
+    cred_exc = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="No se pudo validar el token",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    try:
+        payload = jwt.decode(
+            token,
+            settings.JWT_SECRET,
+            algorithms=[settings.JWT_ALG]
+        )
+    except Exception:
+        # Token inválido, expirado, etc.
+        raise cred_exc
+
+    user_id = payload.get("sub")
+    if user_id is None:
+        raise cred_exc
+    usuario = {
+        "id": user_id,
+        "nombre": payload.get("nombre"),
+        "correo": payload.get("correo"),
+        "rol": payload.get("rol"),
+    }
+    return usuario
+
+def require_admin(current_user: dict = Depends(get_current_user)):
+    if current_user.get("rol") != "admin" and current_user.get("rol") != 1:
+        # depende de cómo manejes el rol (string / int)
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permisos para esta operación"
+        )
+    return current_user
 
 def modificar_token_refresh(id_usuario: int | str, tkRef:str, db: Session):
     sql = "SELECT modificarToken(:id_usuario, :token_refresh) as validacion"
@@ -77,15 +121,8 @@ def refresh_token( datos_Ref:UsuarioRefreshToken, db: Session = Depends(get_db))
     return {"token": new_access_token,"tkRef": new_tkRef}  
 
 @auth_router.get("/obtenerUsuario")
-def obtener_usuario(token: str, db: Session = Depends(get_db)):
-    deToken = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALG])
-    usuario = {
-            "id": deToken["sub"],
-            "nombre": deToken["nombre"],
-            "correo": deToken["correo"],
-            "rol": deToken["rol"]
-            }
-    return usuario
+def obtener_usuario(current_user: dict = Depends(get_current_user)):
+    return current_user
 
 @auth_router.post("/register")
 def register(usuario: UsuarioCreate, db: Session = Depends(get_db)):
@@ -208,6 +245,16 @@ def cambiarPass(usuario: UsuarioCambiarClave, db: Session = Depends(get_db)):
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail="Error al procesar la solicitud") 
+
+@auth_router.patch("/change_passw_login")
+def cambiarPasswordLog(newPassw ,current_user: dict = Depends(get_current_user) , db: Session = Depends(get_db)):
+    try:
+        db.execute(text("CALL claveUsuario(:id_usuario, :clave)"), {"id_usuario": current_user.get("id_usuario"), "clave":newPassw})
+        return {"mensaje": "Cambio de contrasena exitoso"}
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail="Error al procesar la solicitud")
+
     
 @auth_router.delete("/cerrarSesion/{id_usuario}")
 def cerrar_sesion(id_usuario: int, db: Session = Depends(get_db)):

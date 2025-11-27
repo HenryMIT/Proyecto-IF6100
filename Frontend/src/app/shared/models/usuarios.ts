@@ -10,4 +10,3 @@ export class Usuario {
     this.rol = usr != undefined ? usr.rol : 0;
     }
 }
-
