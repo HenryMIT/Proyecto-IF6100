@@ -10,6 +10,9 @@ router_correo = APIRouter(prefix="/correo", tags=["Correos_Electronicos"])
 
 @router_correo.post("/enviar_correo")
 def enviar_correo(correo: Correo_electronico):
-    
-    response = send_email_test(correo.destinatario, correo.asunto, correo.cuerpo)    
-    return response
+    try:
+        response = send_email_test(correo.destinatario, correo.asunto, correo.cuerpo)    
+        return response
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail="Error al procesar la solicitud")

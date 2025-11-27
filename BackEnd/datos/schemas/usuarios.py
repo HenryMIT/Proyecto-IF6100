@@ -39,6 +39,10 @@ class UsuarioCambiarClave(BaseModel):
     correo: EmailStr
     codigo: int        
     nueva_clave: str
+
+class UsuarioAuthNuevaClave(BaseModel):
+    id_usuario: int    
+    newPassw: str
     
 class UsuarioDelete(BaseModel):
     id: int
