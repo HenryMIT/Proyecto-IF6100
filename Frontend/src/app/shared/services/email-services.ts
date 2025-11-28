@@ -16,7 +16,6 @@ export class EmailServices {
   constructor(){}
 
   enviarCorreo(correo: Correo_Electronico): Observable<Correo_Electronico> {
-    console.log(correo)
     return this.http.post<Correo_Electronico>(`${_SERVER}/correo/enviar_correo`, correo);
   }
 

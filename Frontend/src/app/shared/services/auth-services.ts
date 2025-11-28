@@ -52,7 +52,8 @@ export class AuthServices {
       retry(1),
       tap(
         (tokens) => {
-          this.doLogin(tokens);                 
+          this.doLogin(tokens);
+          this.router.navigate(['home']);                 
         }
       ),
       map(() => true),

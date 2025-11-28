@@ -5,6 +5,7 @@ import { CartService } from '../../shared/services/cart';
 import { Productos } from '../../shared/services/productos';
 import { DialogService } from '../forms/dialogo-generico/dialog.service';
 import { take } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-tarjetas-productos',
@@ -58,5 +59,10 @@ export class TarjetasProductosComponent {
           .subscribe();
       }
     });
+  }
+  getImageUrl(relativePath: string): string {
+    if (!relativePath) return '';
+    if (relativePath.startsWith('http')) return relativePath;
+    return environment.Servidor + relativePath;
   }
 }
