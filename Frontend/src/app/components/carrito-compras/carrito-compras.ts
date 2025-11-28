@@ -151,7 +151,7 @@ export class CarritoCompras implements OnDestroy {
         comentario: 'PayPal',
       };
 
-      console.log('Creando factura...', factura);
+    
       const id_factura = await this.facturaService.createFactura(factura).toPromise();
       const id = Number(id_factura?.id) || 0;
 
@@ -167,10 +167,9 @@ export class CarritoCompras implements OnDestroy {
           cantidad: item.cantidad || 1
         };
 
-        console.log('Creando factura_producto:', facturaProducto);
+      
         await this.facturaService.creatFacturaProducto(facturaProducto).toPromise();
       }
-      console.log(decoded.nombre);
 
       this.imprimirFacturaPDF(id, decoded);
       this.notificarCorreo(id, decoded.correo);

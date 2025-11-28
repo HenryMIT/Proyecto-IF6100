@@ -40,7 +40,6 @@ export class Facturas implements AfterViewInit {
 
   onFiltroChange(f: any) {
     this.filtro = f;
-    console.log('Filtro actualizado:', this.filtro);
     this.buscarFacturasAvanzado();
   }
 
@@ -94,11 +93,10 @@ export class Facturas implements AfterViewInit {
     const parametrosStr = parametros.join('&');
     const camposStr = campos.join('&');
 
-    console.log('Llamando búsqueda avanzada con:', { parametros: parametrosStr, campos: camposStr });
+    
 
     this.facturaSrv.buscarFacturasAvanzado(parametrosStr, camposStr).subscribe({
       next: (data: any[]) => {
-        console.log('Resultados recibidos:', data);
         const newDataSource = new MatTableDataSource<FacturaConDetalle>(data);
         newDataSource.paginator = this.paginator;
         this.dataSource.set(newDataSource);
@@ -143,7 +141,7 @@ export class Facturas implements AfterViewInit {
       if (resultado) {
         this.facturaSrv.actualizarEstadoFactura(id, nuevoEstado).subscribe({
           next: (res) => {
-            console.log('Estado actualizado:', res);
+           
             this.cargarFacturas(); // Recargar la tabla
             this.dialogService.informar(
               `Estado actualizado a: ${nuevoEstado}`,
@@ -171,7 +169,7 @@ export class Facturas implements AfterViewInit {
       if (resultado) {
         this.facturaSrv.eliminarFactura(id).subscribe({
           next: (res) => {
-            console.log('Factura eliminada:', res);
+    
             this.cargarFacturas(); // Recargar la tabla
             this.dialogService.informar(
               'Factura eliminada correctamente',
@@ -212,7 +210,7 @@ export class Facturas implements AfterViewInit {
   onVerDetalle(id: number) {
   this.facturaSrv.obtenerDetalleFactura(id).subscribe({
     next: (detalle: any[]) => {
-      console.log('Detalle de factura:', detalle);
+      
 
       let mensaje = `DETALLE DE FACTURA #${id}\n\n`;
 

@@ -57,7 +57,7 @@ export class AdministradoresComponent implements AfterViewInit {
   }
 
   onFiltroChange() {
-    this.paginaActual = 1; // Resetear a la primera página al filtrar
+    this.paginaActual = 1;
     this.cargarAdministradores();
   }
 
@@ -89,7 +89,6 @@ export class AdministradoresComponent implements AfterViewInit {
     ).subscribe({
       next: (data: AdministradorIf[]) => {
         this.dataSource.set(new MatTableDataSource(data));
-        // Como el backend maneja la paginación, no necesitamos asignar el paginator al dataSource
       },
       error: (err) => {
         console.error('Error al cargar administradores:', err);

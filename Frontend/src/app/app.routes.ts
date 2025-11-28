@@ -33,8 +33,7 @@ export const routes: Routes = [
   { path: 'servicios/:tipo', component: Servicios },  
   { path: 'carrito', component: CarritoCompras},      
   { path: 'categorias', component: Categorias},
-  { path: 'categorias/:id', component: Categorias },
-  // Panel de administracion 
+  { path: 'categorias/:id', component: Categorias },  
   { path: 'contactos', component: Contactos,
     canActivate: [ authGuard],
         data: { roles: [Role.visitante, Role.Cliente] }

@@ -72,12 +72,12 @@ export class Register {
   }
 
   public onRegister() {
-    console.log(this.frmRegister.valid)
+ 
     if (this.frmRegister.valid) {
       const datos: ClienteRegister = this.frmRegister.value;
       this.svrAuth.register(datos).subscribe(
         (response) => {
-          console.log(response)
+  
           this.markFormGroupTouched(this.frmRegister)          
           if (response === true) {
             this.dialog.open(DialogoGenerico, {

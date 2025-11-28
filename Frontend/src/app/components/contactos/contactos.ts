@@ -126,7 +126,7 @@ export class Contactos implements AfterViewInit {
       if (resultado) {
         this.contactoSrv.actualizarEstadoContacto(id, nuevoEstado).subscribe({
           next: (res) => {
-            console.log('Estado actualizado:', res);
+   
             this.filtrarContactos(); // Recargar la tabla
             this.dialogService.informar(
               `Contacto marcado como ${textoEstado} correctamente`,
