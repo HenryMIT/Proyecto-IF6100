@@ -277,6 +277,24 @@ SELECT limpiarSesionesExpiradas() AS 'Sesiones Limpiadas';
 -- 11. VERIFICACIÓN: Ver estado final
 SELECT * FROM Usuarios ORDER BY id;
 
+USE DB_Equipo_Rummi;
+SET @id_admin = nuevoAdministrador(
+    'Pedro',                   
+    'Ramirez',                  
+    'Solano',                  
+    'pedro.admin@hospital.com',
+    '88887777'                  
+);
+
+SELECT @id_admin AS 'ID_Administrador_Creado';
+SELECT nuevoUsuario(
+    @id_admin,                 
+    'pedro.admin@hospital.com', 
+    1,                          
+    'ClaveSegura123'          
+) AS 'ID_Usuario_Creado';
+
+
 -- ========================================
 -- INFORMACIÓN DE CÓDIGOS DE RETORNO
 -- ========================================
